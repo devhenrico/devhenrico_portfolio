@@ -116,6 +116,32 @@ Página separada com layout de duas colunas: foto com acentos SVG animados e bio
 | TypeScript   | 5      | Tipagem estática                 |
 | Tailwind CSS | 4      | Estilização utilitária           |
 
+### Animações
+
+| Biblioteca                   | Uso                                            |
+| ---------------------------- | ---------------------------------------------- |
+| Motion (Framer Motion)       | Animações de componentes                       |
+| GSAP                         | Animações de performance (grid lines, entrada) |
+| Lenis                        | Scroll suave global                            |
+| @lottiefiles/dotlottie-react | Animação de scroll down                        |
+
+### UI & Componentes
+
+| Biblioteca          | Uso                                              |
+| ------------------- | ------------------------------------------------ |
+| @tabler/icons-react | Ícones                                           |
+| Radix UI            | Primitivos acessíveis (AlertDialog, Label, Slot) |
+| Lucide React        | Ícones complementares                            |
+| Sonner              | Toasts e notificações                            |
+| canvas-confetti     | Efeito confetti pós-envio                        |
+
+### 3D & Gráficos
+
+| Biblioteca         | Uso                           |
+| ------------------ | ----------------------------- |
+| Three.js           | Renderização 3D               |
+| @react-three/fiber | Integração Three.js com React |
+
 ### Integração
 
 | Serviço               | Uso                                       |
