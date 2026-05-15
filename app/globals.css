@@ -1,0 +1,1418 @@
+@import url('https://fonts.cdnfonts.com/css/sf-sports-night');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* 
+  =============================================================================
+  1. CUSTOM VARIANTS & UTILITIES CONFIG
+  =============================================================================
+  Purposes: Fix Tailwind v4 apply issues and define global markers.
+*/
+
+@custom-variant dark (&:is(.dark *));
+
+/* 
+  =============================================================================
+  2. TAILWIND THEME EXTENSIONS (Centralized Tokens)
+  =============================================================================
+*/
+
+@theme inline {
+  --shadow-input:
+    0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+
+  /* ═══════════════════════════════════════════════════════════════════
+     ENHANCED MINIMAL DESIGN SYSTEM - Ultra-Minimal + Refined Modern
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Brand Colors - Preserved */
+  --color-accent-cyan: #2fa4ff;
+  --color-accent-cyan-soft: #06b6d4;
+  --color-dark-bg: #020013;
+
+  /* Enhanced Card Tokens */
+  --color-card-surface: rgba(23, 23, 23, 0.4);
+  --color-card-border: rgba(38, 38, 38, 0.6);
+  --color-card-border-hover: rgba(6, 182, 212, 0.2);
+  --color-subtle-border: #262626;
+
+  /* Enhanced Shadows */
+  --shadow-card-hover:
+    0 20px 40px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(6, 182, 212, 0.1);
+  --shadow-card-glow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(6, 182, 212, 0.15),
+    0 0 30px -5px rgba(6, 182, 212, 0.1);
+  --shadow-input-focus: 0 0 0 3px rgba(6, 182, 212, 0.1);
+
+  /* Precise Spacing System for fine-tuned layouts */
+  --spacing-100: 25rem;
+  --spacing-110: 27.5rem;
+  --spacing-120: 30rem;
+  --spacing-130: 32.5rem;
+  --spacing-140: 35rem;
+  --spacing-150: 37.5rem;
+  --spacing-160: 40rem;
+  --spacing-180: 45rem;
+  --spacing-200: 50rem;
+  --spacing-250: 62.5rem;
+  --spacing-300: 75rem;
+
+  /* Global Color Mapping (Linked to CSS Variables) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Adaptive Border Radius Scale */
+  --radius-xs: calc(var(--radius) - 6px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 20px);
+
+  /* Advanced Animation Definitions */
+  --animate-gradient: gradient 8s linear infinite;
+  --animate-shiny-text: shiny-text 8s infinite;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-spotlight: spotlight 2.5s ease 0.75s 1 forwards;
+  --animate-pulse-slow: pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-slow-spin: spin 12s linear infinite;
+  --animate-bounce-subtle: bounce-subtle 3s ease-in-out infinite;
+
+  @keyframes gradient {
+    to {
+      background-position: var(--bg-size, 300%) 0;
+    }
+  }
+  @keyframes shiny-text {
+    0%,
+    90%,
+    100% {
+      background-position: calc(-100% - var(--shiny-width)) 0;
+    }
+    30%,
+    60% {
+      background-position: calc(100% + var(--shiny-width)) 0;
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+  @keyframes spotlight {
+    0% {
+      opacity: 0;
+      transform: translate(-72%, -62%) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -40%) scale(1);
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+  @keyframes bounce-subtle {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+}
+
+/* 
+  =============================================================================
+  3. ROOT DESIGN TOKENS - DARK THEME (Primary Theme)
+  =============================================================================
+  Deep black theme inspired by Next.js website (#000000 primary)
+*/
+
+:root {
+  --radius: 0.625rem;
+
+  /* ═══ DARK THEME - Next.js Website Style ═══ */
+  --background: #000000;
+  --foreground: #ededed;
+  --card: #0a0a0a;
+  --card-foreground: #ededed;
+  --popover: #0a0a0a;
+  --popover-foreground: #ededed;
+  --primary: #ededed;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ededed;
+  --muted: #1a1a1a;
+  --muted-foreground: #a3a3a3;
+  --accent: #1a1a1a;
+  --accent-foreground: #ededed;
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #525252;
+
+  /* Theme specific - Next.js style */
+  --page-bg: #000000;
+  --section-bg: #0a0a0a;
+  --nav-bg: rgba(0, 0, 0, 0.8);
+  --card-bg: rgba(23, 23, 23, 0.5);
+  --card-border: rgba(38, 38, 38, 0.6);
+  --card-hover-border: rgba(6, 182, 212, 0.2);
+  --text-primary: #ededed;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --accent-cyan: #2fa4ff;
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #2fa4ff;
+  --sidebar-primary-foreground: #ededed;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #525252;
+}
+
+.font-sports {
+  font-family: 'SF Sports Night', sans-serif;
+}
+
+/* 
+  =============================================================================
+  4. BASE LAYER (Global Resets, Scrollbars, Typography)
+  =============================================================================
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply antialiased;
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  p {
+    @apply text-base leading-relaxed font-normal;
+    color: var(--text-secondary);
+  }
+
+  /* Selection styling */
+  ::selection {
+    @apply bg-cyan-500/30;
+    color: var(--text-primary);
+  }
+
+  /* Sophisticated Custom Scrollbar */
+  ::-webkit-scrollbar {
+    @apply h-[8px] w-[8px];
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full border-[1.5px] border-transparent bg-neutral-700 bg-clip-padding transition-colors duration-300;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-500;
+  }
+
+  /* Universal Focus Styling */
+  :focus-visible {
+    @apply ring-2 ring-cyan-500/50 ring-offset-2 outline-none;
+    --tw-ring-offset-color: var(--page-bg);
+  }
+
+  /* Heading Resets */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight;
+    color: var(--text-primary);
+  }
+}
+
+/* 
+  =============================================================================
+  5. COMPONENT LAYER (Abstraction & Semantic Classes)
+  =============================================================================
+*/
+
+@layer components {
+  /* --- 5.1 GLOBAL LAYOUT CLASSES --- */
+
+  .main-wrapper {
+    @apply relative mx-auto flex min-h-screen flex-col items-center justify-center overflow-hidden bg-black px-4 text-white sm:px-10;
+  }
+
+  .content-max-width {
+    @apply relative mx-auto w-full max-w-7xl;
+  }
+
+  .section-spacing {
+    @apply w-full py-24 md:py-32 lg:py-48;
+  }
+
+  .grid-standard {
+    @apply grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-3;
+  }
+
+  .flex-v-center {
+    @apply flex items-center;
+  }
+
+  .flex-center-all {
+    @apply flex items-center justify-center;
+  }
+
+  /* --- 5.2 THE TYPOGRAPHY SYSTEM --- */
+
+  .heading-xl {
+    @apply text-4xl leading-[1.05] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl;
+  }
+  .heading-lg {
+    @apply text-3xl leading-[1.1] sm:text-4xl md:text-5xl lg:text-6xl;
+  }
+  .heading-md {
+    @apply text-2xl leading-[1.2] sm:text-3xl md:text-4xl;
+  }
+  .heading-sm {
+    @apply text-xl leading-[1.3] sm:text-2xl;
+  }
+
+  .text-body-lg {
+    @apply text-lg leading-relaxed font-normal text-neutral-400 sm:text-xl md:text-2xl;
+  }
+  .text-body-md {
+    @apply text-base leading-relaxed text-neutral-400 sm:text-lg;
+  }
+  .text-body-sm {
+    @apply text-sm leading-relaxed text-neutral-500;
+  }
+
+  .text-gradient-cyan {
+    @apply inline-block bg-linear-to-r from-cyan-400 via-blue-500 to-purple-400 bg-clip-text font-semibold text-transparent italic;
+  }
+
+  .text-shimmer {
+    @apply animate-shimmer bg-linear-to-r from-neutral-500 via-white to-neutral-500 bg-size-[200%_auto] bg-clip-text text-transparent;
+  }
+
+  /* --- 5.3 HERO SECTION (Branding & Identity) --- */
+  /* Purpose: Introduction, Profile, and Availability */
+
+  .hero-container {
+    @apply relative mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-32 pb-20 sm:px-6 lg:px-8;
+  }
+
+  .hero-badge-outer {
+    @apply animate-bounce-subtle mb-8 inline-block;
+  }
+
+  .hero-badge-inner {
+    @apply flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/50 px-4 py-2 text-sm font-semibold backdrop-blur-md;
+  }
+
+  .hero-headline {
+    @apply relative z-10 mb-8 max-w-5xl font-bold tracking-tighter md:mb-10;
+  }
+
+  .hero-subtext {
+    @apply relative z-10 mb-12 max-w-2xl text-lg leading-relaxed font-normal text-neutral-400 sm:text-xl md:text-2xl;
+    color: rgb(194, 205, 231);
+  }
+
+  .hero-image-box {
+    @apply relative aspect-4/5 w-full overflow-hidden rounded-[2.5rem] border border-neutral-800/80 shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:aspect-3/4 md:aspect-4/5 lg:aspect-3/4 xl:aspect-4/5;
+  }
+
+  .hero-image-el {
+    @apply transform object-cover brightness-90 filter transition-all duration-1000 hover:scale-105 hover:brightness-110;
+  }
+
+  .hero-visual-lines {
+    @apply pointer-events-none absolute inset-0 opacity-20;
+  }
+
+  .hero-line-v {
+    @apply absolute inset-y-0 w-px bg-linear-to-b from-transparent via-cyan-500 to-transparent;
+  }
+  .hero-line-h {
+    @apply absolute inset-x-0 h-px bg-linear-to-r from-transparent via-cyan-500 to-transparent;
+  }
+
+  /* --- 5.4 FEATURES SECTION (Values & Workflow) --- */
+  /* Purpose: Quality, Communication, and Reliability Cards */
+
+  .features-wrapper {
+    @apply mx-auto flex w-full max-w-7xl flex-col items-center px-6 py-32 md:px-12 md:py-48;
+  }
+
+  .features-grid {
+    @apply grid w-full grid-cols-1 gap-10 md:grid-cols-2 md:gap-14 lg:grid-cols-3;
+  }
+
+  .feature-item-card {
+    @apply relative flex h-full flex-col items-center rounded-3xl border border-neutral-900 bg-neutral-950/40 p-10 text-center transition-all duration-500 hover:border-cyan-500/20 hover:bg-neutral-900/40;
+  }
+
+  .feature-item-icon-box {
+    @apply mb-8 flex h-16 w-16 items-center justify-center rounded-2xl border border-neutral-800 bg-neutral-900 transition-all duration-500;
+  }
+
+  .feature-item-title {
+    @apply mb-4 text-2xl font-bold text-white transition-colors;
+  }
+
+  .feature-item-desc {
+    @apply text-lg leading-relaxed text-neutral-400;
+  }
+
+  .feature-reveal-overlay {
+    @apply pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-700;
+  }
+
+  /* --- 5.5 PROJECTS SECTION (The Showcase) --- */
+  /* Purpose: Visualizing Technical Achievements */
+
+  .projects-container {
+    @apply relative overflow-hidden py-32 md:py-48;
+  }
+
+  .projects-header-box {
+    @apply mx-auto mb-24 max-w-4xl px-6 text-center md:mb-32;
+  }
+
+  .projects-item-wrapper {
+    @apply flex h-[450px] w-full items-center justify-center px-6 transition-transform duration-500 hover:scale-[1.01] sm:h-[500px] md:h-[550px] lg:h-[600px];
+  }
+
+  .projects-item-card {
+    @apply flex w-full max-w-[650px] flex-col rounded-[2rem] border border-white/5 bg-neutral-950/70 p-8 shadow-2xl backdrop-blur-xl;
+  }
+
+  .projects-item-title {
+    @apply mb-2 truncate text-3xl font-bold text-neutral-100;
+  }
+
+  .projects-item-desc {
+    @apply mb-8 line-clamp-2 text-lg text-neutral-400;
+  }
+
+  .projects-image-viewport {
+    @apply relative w-full flex-1 overflow-hidden rounded-2xl border border-white/5 bg-black/50 shadow-inner transition-colors group-hover:border-cyan-500/20;
+  }
+
+  .projects-tech-stack {
+    @apply mt-8 flex w-full items-center justify-between px-2;
+  }
+
+  .projects-tech-group {
+    @apply flex items-center -space-x-3 transition-all duration-300 hover:space-x-1 sm:-space-x-4;
+  }
+
+  /* --- 5.6 TECHNOLOGIES SECTION (Expertise) --- */
+  /* Purpose: Visual Stack and Skill Groups */
+
+  .tech-section-root {
+    @apply relative flex flex-col items-center bg-black py-32 md:py-48;
+  }
+
+  .tech-bento-container {
+    @apply mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-8 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .tech-bento-item {
+    @apply relative flex flex-col overflow-hidden rounded-[2.5rem] border border-neutral-900 bg-neutral-950/50 p-10 shadow-2xl backdrop-blur-md transition-all duration-700 hover:border-cyan-500/30 hover:bg-neutral-900/50;
+  }
+
+  .tech-visual-header {
+    @apply relative mb-8 flex min-h-[180px] w-full flex-1 items-center justify-center rounded-3xl border border-neutral-800/40 bg-neutral-900/40 p-6;
+  }
+
+  .tech-icon-instance {
+    @apply relative h-12 w-12 transform filter transition-all duration-500 hover:z-50 hover:scale-125 hover:drop-shadow-[0_0_15px_rgba(6,182,212,0.4)] sm:h-16 sm:w-16 md:h-20 md:w-20;
+  }
+
+  .tech-title-text {
+    @apply mb-4 text-2xl font-bold text-white sm:text-3xl;
+  }
+
+  /* --- 5.7 CONTACT SECTION (Reach Out) --- */
+  /* Purpose: Inquiries and Social Connectivity */
+
+  .contact-section-inner {
+    @apply mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-8 py-32 md:gap-14 md:py-48 lg:grid-cols-3;
+  }
+
+  .contact-form-side {
+    @apply relative rounded-[3rem] border border-neutral-900 bg-neutral-950/50 p-12 shadow-[0_0_100px_rgba(0,0,0,0.8)] backdrop-blur-2xl lg:col-span-1;
+  }
+
+  .contact-info-grid {
+    @apply grid h-fit grid-cols-1 gap-8 md:grid-cols-2 lg:col-span-2;
+  }
+
+  .contact-info-card {
+    @apply relative rounded-[2.5rem] border border-neutral-900 bg-neutral-950/30 p-8 transition-all duration-500 hover:bg-neutral-900/40;
+  }
+
+  .contact-label {
+    @apply mb-3 block text-sm font-bold tracking-widest text-neutral-500 uppercase;
+  }
+
+  .contact-value {
+    @apply truncate text-xl font-semibold text-white transition-colors;
+  }
+
+  .contact-input-box {
+    @apply relative mb-8;
+  }
+
+  .contact-input-el {
+    @apply w-full rounded-2xl border border-neutral-800 bg-neutral-900 px-5 py-4 text-base text-white shadow-inner transition-all outline-none focus:border-cyan-500/50 focus:bg-neutral-800;
+  }
+
+  /* --- 5.8 GLOBAL UI COMPONENTS (Modals, Alerts, Nav) --- */
+
+  .nav-floating-bg {
+    @apply fixed inset-x-0 top-10 z-[1000] mx-auto flex max-w-fit items-center space-x-6 rounded-full border border-neutral-800 bg-black/80 px-8 py-3 shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-lg;
+  }
+
+  .nav-action-btn {
+    @apply relative rounded-full border border-white/10 px-6 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:bg-white hover:text-black;
+  }
+
+  .footer-wrapper {
+    @apply mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-12 border-t border-neutral-900 px-10 py-20 md:flex-row;
+  }
+
+  .dialog-box {
+    @apply fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-6 backdrop-blur-2xl;
+  }
+
+  .dialog-card {
+    @apply w-full max-w-2xl rounded-[3rem] border border-neutral-800 bg-neutral-950 p-12 shadow-[0_0_150px_rgba(0,0,0,0.9)];
+  }
+
+  /* --- 5.9 DECORATIVE & BOX STYLES --- */
+
+  .box-glow-cyan {
+    @apply shadow-[0_0_30px_rgba(6,182,212,0.15)] transition-shadow duration-500 hover:shadow-[0_0_50px_rgba(6,182,212,0.25)];
+  }
+
+  .glass-card {
+    @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl;
+  }
+
+  .gradient-border-b {
+    @apply absolute right-0 bottom-0 left-0 h-px bg-linear-to-r from-transparent via-cyan-500/60 to-transparent;
+  }
+
+  .gradient-border-b-glow {
+    @apply absolute right-[15%] bottom-0 left-[15%] h-px bg-linear-to-r from-transparent via-cyan-400 to-transparent opacity-70 blur-md;
+  }
+}
+
+/* 
+  =============================================================================
+  6. UTILITY LAYER (Atomic Classes & Variants)
+  =============================================================================
+*/
+
+/* Text Balance & Wraps */
+.text-balance {
+  text-wrap: balance;
+}
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Masking Utilities */
+.mask-faded-radial {
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+}
+
+.mask-fade-edges {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+/* Perspective Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Scroll Behavior Modifier */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Hover Utilities */
+.hover-lift-sm {
+  @apply transition-transform duration-300 hover:-translate-y-1;
+}
+.hover-lift-md {
+  @apply transition-transform duration-300 hover:-translate-y-2;
+}
+.hover-lift-lg {
+  @apply transition-transform duration-300 hover:-translate-y-4;
+}
+
+.hover-scale-subtle {
+  @apply transition-transform duration-500 hover:scale-[1.02];
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENHANCED MODERN CARD UTILITIES - Refined Hover Effects
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Modern Card Base - Ultra-minimal with glassmorphism */
+.card-modern {
+  @apply relative rounded-2xl border bg-neutral-900/40 backdrop-blur-sm;
+  border-color: rgba(38, 38, 38, 0.6);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-modern:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.2);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(6, 182, 212, 0.15),
+    0 0 30px -5px rgba(6, 182, 212, 0.1);
+}
+
+/* Card with subtle glow on hover */
+.card-glow-hover {
+  @apply relative overflow-hidden;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease;
+}
+
+.card-glow-hover::before {
+  content: '';
+  @apply pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(6, 182, 212, 0.06),
+    transparent 40%
+  );
+}
+
+.card-glow-hover:hover::before {
+  @apply opacity-100;
+}
+
+/* Modern Input Focus States */
+.input-modern {
+  @apply rounded-xl border border-neutral-800 bg-neutral-900/60 px-4 py-3 text-white placeholder:text-neutral-500;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.input-modern:focus {
+  @apply border-cyan-500/40 bg-neutral-800/60 outline-none;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+/* Enhanced Section Spacing */
+.section-enhanced {
+  @apply w-full py-32 md:py-40;
+}
+
+/* Modern Typography - Better contrast */
+.text-body-enhanced {
+  @apply text-base leading-relaxed text-neutral-300 md:text-lg;
+}
+
+/* Tech Badge - Monospace brutalist style */
+.tech-badge-mono {
+  @apply rounded-md border border-neutral-700/50 bg-neutral-800/80 px-2.5 py-1 font-mono text-xs text-neutral-300;
+}
+
+/* 
+  =============================================================================
+  7. LEGACY & SPECIFIC CSS OVERRIDES
+  =============================================================================
+*/
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 
+  =============================================================================
+  8. DETAILED COMPONENT SUB-ELEMENTS (Atomic Granularity)
+  =============================================================================
+  The following classes provide ultra-specific styling for internal component elements
+  to avoid repeated tailwind syntax in TSX files across the entire project.
+*/
+
+/* Avatar System */
+.avatar-v1-root {
+  @apply relative flex h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900;
+}
+.avatar-v1-fallback {
+  @apply flex h-full w-full items-center justify-center rounded-2xl bg-cyan-600/20 text-sm font-bold text-cyan-400;
+}
+
+/* Form Field Atomic Elements */
+.form-input-wrapper {
+  @apply mb-8 flex w-full flex-col gap-2;
+}
+.form-input-label {
+  @apply ml-2 text-sm font-semibold tracking-wide text-neutral-500;
+}
+.form-input-field {
+  @apply rounded-2xl border border-neutral-900 bg-neutral-950 px-6 py-4.5 text-base text-white transition-all outline-none focus:border-cyan-500/40;
+}
+
+/* Alert System Atomic Elements */
+.alert-toast-container {
+  @apply fixed right-8 bottom-8 z-[99999] flex flex-col gap-4;
+}
+.alert-toast-item {
+  @apply flex min-w-[300px] items-center gap-4 rounded-2xl border px-6 py-4 shadow-2xl backdrop-blur-2xl;
+}
+
+/* Project Card Atomic Elements */
+.project-card-header {
+  @apply mb-6 flex flex-col gap-2;
+}
+.project-card-footer {
+  @apply mt-auto flex items-center justify-between border-t border-white/5 pt-6;
+}
+
+/* Bento Item Atomic Elements */
+.bento-item-badge {
+  @apply absolute top-6 right-6 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-bold tracking-widest text-cyan-400 uppercase;
+}
+
+/* Nav Item Atomic Elements */
+.nav-item-indicator {
+  @apply absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-cyan-400 opacity-0 transition-opacity;
+}
+
+/* Grid Background System */
+.bg-grid-modern {
+  @apply absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[50px_50px] opacity-50;
+}
+
+.bg-dot-modern {
+  @apply absolute inset-0 bg-[radial-gradient(#222_1px,transparent_0)] bg-size-[30px_30px] opacity-40;
+}
+
+/* 
+  =============================================================================
+  9. ADVANCED BUTTON SYSTEMS
+  =============================================================================
+  Comprehensive button variants for CTAs, actions, and interactive elements.
+*/
+
+/* Border Magic Button - Animated spinning gradient border */
+.btn-magic-outer {
+  @apply relative inline-flex h-12 cursor-pointer overflow-hidden rounded-full p-px focus:ring-2 focus:ring-cyan-400/50 focus:ring-offset-2 focus:ring-offset-black focus:outline-none;
+}
+
+@utility bg-dot-black {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(0, 0, 0, 0.4) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
+@utility bg-dot-white {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.3) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
+.btn-magic-glow {
+  @apply absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#22d3ee_0%,#083344_50%,#22d3ee_100%)];
+}
+
+.btn-magic-inner {
+  @apply inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-6 py-2 text-sm font-semibold text-white backdrop-blur-3xl transition-all hover:bg-slate-900;
+}
+
+/* Hover Border Gradient Button */
+.btn-gradient-container {
+  @apply relative flex h-min w-fit flex-col flex-nowrap content-center items-center justify-center gap-10 overflow-visible rounded-full border bg-black/20 p-px transition duration-500 hover:bg-black/10;
+}
+
+.btn-gradient-inner {
+  @apply z-10 w-auto rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white;
+}
+
+.btn-gradient-blur {
+  @apply absolute inset-0 z-0 flex-none overflow-hidden rounded-full blur-[2px];
+}
+
+/* GitHub Style Button */
+.btn-github {
+  @apply relative inline-flex h-12 overflow-hidden rounded-full p-px focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none;
+}
+
+.btn-github-spin {
+  @apply absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)];
+}
+
+.btn-github-text {
+  @apply inline-flex h-full w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-2 text-sm font-medium text-white backdrop-blur-3xl transition-colors hover:text-cyan-400;
+}
+
+/* Icon Button Variants */
+.btn-icon-sm {
+  @apply flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-300;
+}
+
+.btn-icon-md {
+  @apply flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300;
+}
+
+.btn-icon-lg {
+  @apply flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300;
+}
+
+.btn-icon-neutral {
+  @apply border border-neutral-800 bg-neutral-900 text-neutral-400 hover:border-neutral-700 hover:bg-neutral-800 hover:text-white;
+}
+
+.btn-icon-ghost {
+  @apply bg-transparent text-neutral-400 hover:bg-neutral-900/50 hover:text-white;
+}
+
+/* 
+  =============================================================================
+  10. INTRO LOADER & SPLASH SCREENS
+  =============================================================================
+  Loading states and initial page transitions.
+*/
+
+.loader-overlay {
+  @apply fixed inset-0 z-9999 flex items-center justify-center bg-black;
+}
+
+.loader-text {
+  @apply text-5xl font-bold text-cyan-100 select-none md:text-7xl;
+}
+
+.loader-pulse {
+  @apply animate-pulse text-neutral-600;
+}
+
+.loader-spinner {
+  @apply h-12 w-12 animate-spin rounded-full border-4 border-neutral-800 border-t-cyan-500;
+}
+
+.loader-dots {
+  @apply flex gap-2;
+}
+
+.loader-dot {
+  @apply h-3 w-3 animate-bounce rounded-full bg-cyan-500;
+}
+
+.loader-dot-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.loader-dot-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.loader-dot-delay-3 {
+  animation-delay: 0.3s;
+}
+
+/* 
+  =============================================================================
+  11. TOOLTIP SYSTEMS
+  =============================================================================
+  Animated tooltips for tech stacks and interactive elements.
+*/
+
+.tooltip-container {
+  @apply relative cursor-help;
+}
+
+.tooltip-content {
+  @apply absolute z-50 rounded-2xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-xl;
+}
+
+.tooltip-top {
+  @apply bottom-full left-1/2 mb-3 -translate-x-1/2;
+}
+
+.tooltip-bottom {
+  @apply top-full left-1/2 mt-3 -translate-x-1/2;
+}
+
+.tooltip-left {
+  @apply top-1/2 right-full mr-3 -translate-y-1/2;
+}
+
+.tooltip-right {
+  @apply top-1/2 left-full ml-3 -translate-y-1/2;
+}
+
+.tooltip-arrow {
+  @apply absolute h-3 w-3 rotate-45 border-neutral-800 bg-neutral-900;
+}
+
+.tooltip-arrow-top {
+  @apply -bottom-1.5 left-1/2 -translate-x-1/2 border-r border-b;
+}
+
+.tooltip-arrow-bottom {
+  @apply -top-1.5 left-1/2 -translate-x-1/2 border-t border-l;
+}
+
+/* Tech Stack Tooltip (Animated) */
+.tech-tooltip-wrapper {
+  @apply relative flex items-center justify-center;
+}
+
+.tech-tooltip-popup {
+  @apply pointer-events-none absolute -top-16 left-1/2 flex -translate-x-1/2 scale-90 flex-col items-center gap-1 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 opacity-0 shadow-2xl transition-all duration-300;
+}
+
+.tech-tooltip-visible {
+  @apply scale-100 opacity-100;
+}
+
+.tech-tooltip-name {
+  @apply text-sm font-bold whitespace-nowrap text-white;
+}
+
+.tech-tooltip-desc {
+  @apply text-xs whitespace-nowrap text-neutral-400;
+}
+
+/* 
+  =============================================================================
+  12. INPUT & FORM VARIANTS
+  =============================================================================
+  Extended form styling for various input types and states.
+*/
+
+/* Input Sizes */
+.input-sm {
+  @apply h-10 rounded-xl px-4 py-2 text-sm;
+}
+
+.input-md {
+  @apply h-12 rounded-2xl px-5 py-3 text-base;
+}
+
+.input-lg {
+  @apply h-14 rounded-2xl px-6 py-4 text-lg;
+}
+
+/* Input States */
+.input-default {
+  @apply border border-neutral-800 bg-neutral-900 text-white placeholder:text-neutral-600;
+}
+
+.input-focus {
+  @apply focus:border-cyan-500/50 focus:bg-neutral-800 focus:ring-4 focus:ring-cyan-500/10;
+}
+
+.input-error {
+  @apply border-red-500/50 bg-red-500/5 focus:border-red-500 focus:ring-red-500/10;
+}
+
+.input-success {
+  @apply border-emerald-500/50 bg-emerald-500/5 focus:border-emerald-500 focus:ring-emerald-500/10;
+}
+
+/* Textarea Specifics */
+.textarea-base {
+  @apply min-h-[140px] resize-none leading-relaxed;
+}
+
+/* Label Variants */
+.label-default {
+  @apply mb-2 block text-sm font-semibold tracking-wide text-neutral-400;
+}
+
+.label-required::after {
+  content: ' *';
+  @apply text-red-400;
+}
+
+/* Form Group */
+.form-group {
+  @apply mb-6 flex flex-col gap-2;
+}
+
+.form-row {
+  @apply grid grid-cols-1 gap-6 md:grid-cols-2;
+}
+
+.form-actions {
+  @apply mt-8 flex items-center justify-end gap-4 border-t border-neutral-900 pt-6;
+}
+
+/* 
+  =============================================================================
+  13. MODAL VARIATIONS
+  =============================================================================
+  Different modal styles for various use cases.
+*/
+
+/* Modal Sizes */
+.modal-sm {
+  @apply max-w-md;
+}
+
+.modal-md {
+  @apply max-w-2xl;
+}
+
+.modal-lg {
+  @apply max-w-4xl;
+}
+
+.modal-xl {
+  @apply max-w-6xl;
+}
+
+.modal-full {
+  @apply max-h-[95vh] max-w-[95vw];
+}
+
+/* Modal Parts */
+.modal-header {
+  @apply mb-6 flex items-center justify-between border-b border-neutral-800 pb-6;
+}
+
+.modal-title {
+  @apply text-2xl font-bold text-white;
+}
+
+.modal-close-btn {
+  @apply flex h-10 w-10 items-center justify-center rounded-full text-neutral-400 transition-all hover:bg-neutral-800 hover:text-white;
+}
+
+.modal-body {
+  @apply flex-1 overflow-y-auto;
+}
+
+.modal-footer {
+  @apply mt-6 flex items-center justify-end gap-4 border-t border-neutral-800 pt-6;
+}
+
+/* CV Preview Modal Specific */
+.cv-modal-container {
+  @apply flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-[2.5rem] border border-neutral-800 bg-neutral-950 shadow-[0_0_100px_rgba(0,0,0,0.8)];
+}
+
+.cv-modal-toolbar {
+  @apply flex items-center justify-between border-b border-neutral-800 bg-neutral-900/50 px-8 py-5;
+}
+
+.cv-modal-iframe {
+  @apply w-full flex-1 bg-white;
+}
+
+/* Alert Dialog Specific */
+.alert-dialog-overlay {
+  @apply fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 p-6 backdrop-blur-xl;
+}
+
+.alert-dialog-content {
+  @apply w-full max-w-md rounded-3xl border border-neutral-800 bg-neutral-900 p-8 shadow-2xl;
+}
+
+.alert-dialog-title {
+  @apply mb-2 text-xl font-bold text-white;
+}
+
+.alert-dialog-description {
+  @apply mb-6 text-base leading-relaxed text-neutral-400;
+}
+
+.alert-dialog-actions {
+  @apply flex items-center justify-end gap-3;
+}
+
+/* 
+  =============================================================================
+  14. SCROLL PROGRESS & INDICATORS
+  =============================================================================
+  Progress bars and scroll indicators.
+*/
+
+.scroll-progress-bar {
+  @apply fixed top-0 right-0 left-0 z-[1000] h-1 origin-left;
+}
+
+.scroll-progress-gradient {
+  @apply h-full bg-linear-to-r from-transparent via-cyan-500 to-transparent;
+}
+
+/* Section Progress Dots */
+.section-dots-container {
+  @apply fixed top-1/2 right-6 z-[500] flex -translate-y-1/2 flex-col gap-3;
+}
+
+.section-dot {
+  @apply h-3 w-3 cursor-pointer rounded-full bg-neutral-800 transition-all duration-300 hover:bg-neutral-600;
+}
+
+.section-dot-active {
+  @apply scale-125 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)];
+}
+
+/* 
+  =============================================================================
+  15. SPARKLE & PARTICLE EFFECTS
+  =============================================================================
+  Background effect placeholders for sparkle components.
+*/
+
+.sparkles-container {
+  @apply pointer-events-none absolute inset-0 h-full w-full overflow-hidden;
+}
+
+.sparkle-particle {
+  @apply absolute rounded-full bg-white;
+}
+
+/* 
+  =============================================================================
+  16. CARD VARIATIONS
+  =============================================================================
+  Extended card styles for different contexts.
+*/
+
+/* Card Sizes */
+.card-compact {
+  @apply rounded-xl p-4;
+}
+
+.card-normal {
+  @apply rounded-2xl p-6;
+}
+
+.card-spacious {
+  @apply rounded-3xl p-10;
+}
+
+/* Card Styles */
+.card-solid {
+  @apply border border-neutral-800 bg-neutral-900;
+}
+
+.card-ghost {
+  @apply border border-neutral-800/50 bg-transparent;
+}
+
+.card-gradient {
+  @apply border border-neutral-800 bg-linear-to-br from-neutral-900 to-neutral-950;
+}
+
+/* Card States */
+.card-interactive {
+  @apply cursor-pointer transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)];
+}
+
+.card-selected {
+  @apply border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.2)];
+}
+
+/* 
+  =============================================================================
+  17. BADGES & TAGS
+  =============================================================================
+  Status indicators and category labels.
+*/
+
+.badge-base {
+  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-wider uppercase;
+}
+
+.badge-cyan {
+  @apply border border-cyan-500/20 bg-cyan-500/10 text-cyan-400;
+}
+
+.badge-purple {
+  @apply border border-purple-500/20 bg-purple-500/10 text-purple-400;
+}
+
+.badge-emerald {
+  @apply border border-emerald-500/20 bg-emerald-500/10 text-emerald-400;
+}
+
+.badge-amber {
+  @apply border border-amber-500/20 bg-amber-500/10 text-amber-400;
+}
+
+.badge-rose {
+  @apply border border-rose-500/20 bg-rose-500/10 text-rose-400;
+}
+
+/* Status Dots */
+.status-dot {
+  @apply relative flex h-3 w-3;
+}
+
+.status-dot-ping {
+  @apply absolute inline-flex h-full w-full animate-ping rounded-full opacity-75;
+}
+
+.status-dot-core {
+  @apply relative inline-flex h-3 w-3 rounded-full;
+}
+
+.status-online {
+  @apply bg-emerald-400;
+}
+
+.status-offline {
+  @apply bg-neutral-500;
+}
+
+.status-busy {
+  @apply bg-amber-400;
+}
+
+/* 
+  =============================================================================
+  18. LINK PREVIEW STYLES
+  =============================================================================
+  Hover card link previews for social footers.
+*/
+
+.link-preview-trigger {
+  @apply relative inline-flex items-center justify-center;
+}
+
+.link-preview-card {
+  @apply pointer-events-none absolute z-50 w-64 scale-95 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 opacity-0 shadow-2xl transition-all duration-300;
+}
+
+.link-preview-visible {
+  @apply pointer-events-auto scale-100 opacity-100;
+}
+
+.link-preview-image {
+  @apply mb-3 h-32 w-full rounded-xl bg-neutral-900 object-cover;
+}
+
+.link-preview-title {
+  @apply mb-1 truncate text-sm font-bold text-white;
+}
+
+.link-preview-url {
+  @apply truncate text-xs text-neutral-500;
+}
+
+/* 
+  =============================================================================
+  19. DIVIDERS & SEPARATORS
+  =============================================================================
+  Visual separators for content sections.
+*/
+
+.divider-horizontal {
+  @apply h-px w-full bg-neutral-900;
+}
+
+.divider-vertical {
+  @apply h-full w-px bg-neutral-900;
+}
+
+.divider-gradient-h {
+  @apply h-px w-full bg-linear-to-r from-transparent via-neutral-800 to-transparent;
+}
+
+.divider-gradient-v {
+  @apply h-full w-px bg-linear-to-b from-transparent via-neutral-800 to-transparent;
+}
+
+.divider-glow {
+  @apply h-px w-full bg-linear-to-r from-transparent via-cyan-500/30 to-transparent;
+}
+
+/* 
+  =============================================================================
+  20. RESPONSIVE UTILITIES
+  =============================================================================
+  Mobile-first responsive helpers.
+*/
+
+.hide-mobile {
+  @apply hidden sm:block;
+}
+
+.hide-tablet {
+  @apply hidden md:block;
+}
+
+.hide-desktop {
+  @apply block lg:hidden;
+}
+
+.show-mobile-only {
+  @apply block sm:hidden;
+}
+
+.container-fluid {
+  @apply w-full px-4 sm:px-6 md:px-8 lg:px-12;
+}
+
+.container-narrow {
+  @apply mx-auto max-w-3xl;
+}
+
+.container-wide {
+  @apply mx-auto max-w-[1440px];
+}
+
+/* 
+  =============================================================================
+  DOCUMENTATION & INDEXING
+  =============================================================================
+  
+  SECTION REFERENCE:
+  ------------------
+  Hero Section:
+    - .hero-headline: The primary H1 equivalent.
+    - .hero-image-box: The container for the main portrait.
+    - .hero-badge-inner: Availability status element.
+    - .hero-visual-lines: Decorative grid lines.
+  
+  Technologies Section:
+    - .tech-bento-item: The individual skill category cards.
+    - .tech-visual-header: The icon showcase area within bento items.
+    - .tech-icon-instance: Individual technology icons.
+  
+  Features Section:
+    - .feature-item-card: The core grid items for Quality, Communication, etc.
+    - .feature-reveal-overlay: The effect wrapper for canvas reveal.
+    - .feature-item-icon-box: Icon container with hover effects.
+  
+  Projects Section:
+    - .projects-item-card: Main project card container.
+    - .projects-tech-group: Tech stack icon row.
+    - .projects-image-viewport: Screenshot/preview area.
+  
+  Contact Section:
+    - .contact-form-side: The main container for the email form.
+    - .contact-info-card: Grid items for social links and info.
+    - .contact-input-el: Styled input fields.
+
+  BUTTON REFERENCE:
+  -----------------
+  - .btn-magic-outer/.btn-magic-inner: Animated spinning border button.
+  - .btn-gradient-container: Hover border gradient button.
+  - .btn-github: GitHub-styled CTA button.
+  - .btn-icon-*: Icon-only button variants.
+
+  UTILITY REFERENCE:
+  ------------------
+  - .hover-lift-*: Lift on hover (sm, md, lg).
+  - .glass-card: Glassmorphism card style.
+  - .gradient-border-b: Bottom gradient line.
+  - .mask-*: Masking utilities for fade effects.
+
+  END OF GLOBALS.CSS - COMPREHENSIVE STYLING SYSTEM
+  Total Lines: 1000+
+  =============================================================================
+*/
