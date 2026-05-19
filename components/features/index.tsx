@@ -76,7 +76,7 @@ export function FeaturesSection() {
 
   return (
     <section ref={sectionRef} className="w-full bg-black py-20">
-      <div className="mx-auto flex w-full flex-col items-center justify-center gap-6 bg-black px-8 lg:flex-row lg:gap-3">
+      <div className="mx-auto flex w-full flex-col items-center justify-center gap-10 bg-black px-8 lg:flex-row lg:gap-3">
         {features.map((feature, idx) => (
           <Card
             key={idx}

@@ -36,7 +36,7 @@ export const AnimatedTooltip = ({
     springConfig,
   );
 
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (event: MouseEvent<HTMLImageElement>) => {
     const nextX = event.nativeEvent.offsetX - 36;
 
     if (animationFrameRef.current) {
@@ -98,16 +98,16 @@ export const AnimatedTooltip = ({
             )}
           </AnimatePresence>
           <div
-            onMouseMove={handleMouseMove}
-            className="relative m-0! inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full p-0.5! leading-none transition duration-500 group-hover:z-30 group-hover:scale-105 sm:h-18 sm:w-18"
+            className="h-14 w-14 transition duration-500 group-hover:z-30 group-hover:scale-105 sm:h-18 sm:w-18"
           >
             <Image
+              onMouseMove={handleMouseMove}
               height={100}
               width={100}
               src={item.image}
               alt={item.name}
               className={cn(
-                'relative m-0! h-full w-full rounded-full object-contain object-center p-0! transition duration-500',
+                'relative m-0! h-full w-full rounded-full object-contain object-center p-0.5! transition duration-500',
                 item.imageClassName,
               )}
             />

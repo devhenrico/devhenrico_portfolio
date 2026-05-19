@@ -431,7 +431,7 @@ export const HeroContent = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-start">
+                <div className="flex w-full items-center justify-center md:justify-start">
                   <AnimatedTooltip items={heroTechStack} />
                 </div>
               </motion.div>
