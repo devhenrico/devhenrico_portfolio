@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { IconArrowRight } from '@tabler/icons-react';
+import { IconArrowRight, IconBrandWhatsapp } from '@tabler/icons-react';
 
 export function PreFooterCTA() {
   const handleContactClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -18,11 +18,11 @@ export function PreFooterCTA() {
     <section className="relative w-full overflow-hidden bg-black py-14 md:py-24">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 h-px w-3/4 -translate-x-1/2 bg-linear-to-r from-transparent via-neutral-600 to-transparent"
+        className="pointer-events-none absolute top-0 left-1/2 h-px w-[92%] -translate-x-1/2 bg-linear-to-r from-transparent via-neutral-600 to-transparent"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/2 h-px w-3/4 -translate-x-1/2 bg-linear-to-r from-transparent via-neutral-600 to-transparent"
+        className="pointer-events-none absolute bottom-0 left-1/2 h-px w-[92%] -translate-x-1/2 bg-linear-to-r from-transparent via-neutral-600 to-transparent"
       />
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff22_1.5px,transparent_1.5px)] bg-size-[32px_32px]" />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -56,12 +56,13 @@ export function PreFooterCTA() {
             </a>
 
             <a
-              href="mailto:henricosantos27@outlook.com"
+              href="https://wa.me/5511990106057"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-neutral-800 bg-black p-6 font-semibold text-white transition-all duration-300 hover:border-neutral-700 hover:bg-neutral-900"
+              className="inline-flex h-12 min-w-44 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 font-semibold text-white transition-all duration-300 hover:bg-[#1ebe5d]"
             >
-              Entrar em contato
+              <span>Iniciar conversa</span>
+              <IconBrandWhatsapp className="h-5 w-5" strokeWidth={2} />
             </a>
           </div>
         </motion.div>

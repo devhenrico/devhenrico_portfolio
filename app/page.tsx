@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { IntroLoader } from '@/components/layout/intro-loader';
@@ -68,7 +68,7 @@ function SectionDivider({
     <div
       aria-hidden="true"
       className={cn(
-        'pointer-events-none relative z-10 -my-12 flex h-24 w-full items-center justify-center md:-my-16 md:h-32',
+        'pointer-events-none relative z-0 -my-12 flex h-24 w-full items-center justify-center transition-opacity duration-200 md:-my-16 md:h-32',
         dividerOffsets[offset],
         className,
       )}
@@ -80,6 +80,7 @@ function SectionDivider({
 
 export default function Home() {
   const pathname = usePathname();
+  const [isHeroCVDropdownOpen, setIsHeroCVDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
@@ -121,8 +122,17 @@ export default function Home() {
 
       <Spotlight />
       <div className="w-full">
-        <HeroSection />
-        <SectionDivider />
+        <div
+          className={cn(
+            'relative',
+            isHeroCVDropdownOpen ? 'z-20' : 'z-auto',
+          )}
+        >
+          <HeroSection onCVDropdownChange={setIsHeroCVDropdownOpen} />
+        </div>
+        <SectionDivider
+          className={isHeroCVDropdownOpen ? 'invisible' : undefined}
+        />
         <FeaturesSection />
         <SectionDivider offset="lower" />
         <ProjectsSection />

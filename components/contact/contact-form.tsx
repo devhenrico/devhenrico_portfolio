@@ -351,24 +351,24 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
 
       {/* Confirmation Dialog */}
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <AlertDialogContent className="rounded-2xl border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+        <AlertDialogContent className="gap-5 rounded-2xl border-neutral-200 bg-white p-6 pt-10 dark:border-neutral-800 dark:bg-neutral-900">
           <button
             type="button"
             aria-label="Fechar modal"
             onClick={() => setShowConfirmDialog(false)}
-            className="absolute top-4 right-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-500 transition-colors duration-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
+            className="absolute top-5 right-5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-500 transition-colors duration-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
           >
             <IconX className="h-4 w-4" />
           </button>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-xl text-neutral-900 dark:text-white">
+          <AlertDialogHeader className="items-center gap-3 text-center">
+            <AlertDialogTitle className="text-lg whitespace-nowrap text-neutral-900 sm:text-xl dark:text-white">
               Confirmar envio da mensagem
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div className="space-y-3 text-neutral-600 dark:text-neutral-400">
+              <div className="w-full space-y-4 text-neutral-600 dark:text-neutral-400">
                 <p>Tem certeza que deseja enviar esta mensagem?</p>
                 {attemptCount < 3 && (
-                  <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-500/20 dark:bg-amber-500/10">
+                  <div className="mt-4 w-full rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">
                     <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
                       Aviso anti-spam:
                     </p>
@@ -388,16 +388,16 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full border-neutral-200 bg-neutral-100 text-neutral-900 hover:bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel className="h-10 rounded-full border-neutral-200 bg-neutral-100 font-semibold text-neutral-900 hover:bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
               Cancelar
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={sendEmail}
-              className="group rounded-full bg-neutral-900 pr-1.5 pl-5 text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-100"
+              className="group relative h-11 rounded-full bg-neutral-900 px-6 font-semibold text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-100"
             >
-              Enviar mensagem
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors duration-300 group-hover:bg-neutral-800">
+              <span>Enviar mensagem</span>
+              <span className="absolute right-1.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors duration-300 group-hover:bg-neutral-800">
                 <IconArrowRight className="h-4 w-4" />
               </span>
             </AlertDialogAction>

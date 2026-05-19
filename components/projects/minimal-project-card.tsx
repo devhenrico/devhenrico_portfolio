@@ -25,7 +25,7 @@ export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
     cardRef.current.style.setProperty('--mouse-y', `${y}%`);
   };
 
-  return (
+  const cardContent = (
     <motion.article
       ref={cardRef}
       initial={{ opacity: 0, y: 20 }}
@@ -33,7 +33,7 @@ export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       onMouseMove={handleMouseMove}
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-neutral-800 bg-[#0a0a0a] p-5 transition-all duration-300 hover:border-neutral-500 md:p-6"
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-neutral-800 bg-[#0a0a0a] p-5 transition-all duration-300 hover:border-neutral-500 md:p-6"
     >
       {/* Project Image with scale on hover */}
       <div className="relative mb-5 aspect-16/10 w-full overflow-hidden rounded-md border border-neutral-200 bg-neutral-100 transition-colors duration-300 dark:border-neutral-800/40 dark:bg-neutral-900">
@@ -80,20 +80,32 @@ export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
 
         {/* Action Link */}
         {project.link && (
-          <Link
-            href={project.link}
-            target={isExternal ? '_blank' : undefined}
-            rel={isExternal ? 'noopener noreferrer' : undefined}
+          <span
             className="flex items-center gap-1.5 text-sm font-semibold text-cyan-600 transition-all duration-300 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300"
-            onClick={(e) => e.stopPropagation()}
           >
             <span className="hidden sm:inline">
               {project.id === 'econoapp' ? 'Ver Projeto' : 'Ver Site'}
             </span>
             <IconArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
+          </span>
         )}
       </div>
     </motion.article>
+  );
+
+  if (!project.link) {
+    return cardContent;
+  }
+
+  return (
+    <Link
+      href={project.link}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      aria-label={`Abrir projeto ${project.title}`}
+      className="block h-full"
+    >
+      {cardContent}
+    </Link>
   );
 };

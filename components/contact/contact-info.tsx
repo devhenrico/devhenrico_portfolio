@@ -129,7 +129,7 @@ export const ContactInfo = ({ itemVariants }: SectionProps) => {
       <motion.div variants={itemVariants}>
         <ContactCard
           icon={<IconMail className="h-6 w-6" />}
-          title="E-mail"
+          title="Email"
           value="henricosantos27@outlook.com"
           href="#"
           clickable={false}
@@ -164,7 +164,7 @@ export const ContactInfo = ({ itemVariants }: SectionProps) => {
         <ContactCard
           icon={<IconBrandGithub className="h-6 w-6" />}
           title="Github"
-          value="devhenrico"
+          value="@devhenrico"
           href="https://github.com/devhenrico"
         />
       </motion.div>
@@ -174,7 +174,7 @@ export const ContactInfo = ({ itemVariants }: SectionProps) => {
         <ContactCard
           icon={<IconBrandLinkedin className="h-6 w-6" />}
           title="LinkedIn"
-          value="henrico-santos"
+          value="/henrico-santos"
           href="https://www.linkedin.com/in/henrico-santos"
         />
       </motion.div>
@@ -184,7 +184,7 @@ export const ContactInfo = ({ itemVariants }: SectionProps) => {
         <ContactCard
           icon={<IconBrandInstagram className="h-6 w-6" />}
           title="Instagram"
-          value="henricossantos"
+          value="@henricossantos"
           href="https://www.instagram.com/henricossantos"
         />
       </motion.div>

@@ -61,6 +61,7 @@ export function TechnologiesSection() {
             <HoverBorderGradient
               containerClassName="group rounded-full"
               className="text-sm font-medium transition-colors duration-500 group-hover:text-cyan-400"
+              activeOnClick
             >
               Moderno. Rápido. Escalável.
             </HoverBorderGradient>

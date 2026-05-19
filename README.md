@@ -349,8 +349,8 @@ npm run test:watch # modo watch (interativo)
 Testam o fluxo completo da aplicação no Chromium. O Playwright inicia o servidor `next dev` automaticamente antes de rodar os testes.
 
 ```bash
-npm run test:e2e        # modo CLI
-npm run test:e2e:ui     # modo visual interativo
+npm run test:e2e    # modo CLI
+npm run test:e2e:ui # modo visual interativo
 ```
 
 ---
@@ -392,7 +392,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 **Henrico da Silva Santos (devhenrico)**
 
-🌐 **Website:** [devhenrico.me](https://devhenrico.me)
-💼 **LinkedIn:** [henrico-santos](https://www.linkedin.com/in/henrico-santos)
-🐙 **GitHub:** [@devhenrico](https://github.com/devhenrico)
-📧 **Email:** [henricosantos27@outlook.com](mailto:henricosantos27@outlook.com)
+- 🐙 **GitHub:** [@devhenrico](https://github.com/devhenrico)
+- 💼 **LinkedIn:** [/henrico-santos](https://www.linkedin.com/in/henrico-santos)
+- 📧 **Email:** [henricosantos27@outlook.com](mailto:henricosantos27@outlook.com)

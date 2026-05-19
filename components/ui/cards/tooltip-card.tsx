@@ -155,7 +155,7 @@ export const Tooltip = ({
               >
                 <div
                   ref={contentRef}
-                  className="p-2 text-sm text-neutral-600 md:p-4 dark:text-neutral-400"
+                  className="p-3 text-sm text-neutral-600 md:p-4 dark:text-neutral-400"
                 >
                   {content}
                 </div>

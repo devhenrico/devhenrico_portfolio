@@ -16,9 +16,9 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer className="w-full bg-white dark:bg-black">
-      <div className="mx-auto flex max-w-7xl flex-col-reverse items-center justify-between gap-6 px-6 py-8 md:flex-row md:gap-0 md:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col-reverse items-center justify-between gap-6 px-4 py-8 sm:px-6 md:flex-row md:gap-0 md:px-8">
         {/* Left: Copyright */}
-        <p className="text-center text-sm text-neutral-500 dark:text-neutral-500">
+        <p className="whitespace-nowrap text-center text-sm text-neutral-500 sm:text-sm dark:text-neutral-500">
           © {new Date().getFullYear()}{' '}
           <a
             href="https://github.com/devhenrico"

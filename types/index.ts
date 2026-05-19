@@ -5,6 +5,7 @@ export interface HeroContentProps {
   containerVariants: Variants;
   imageVariants: Variants;
   itemVariants: Variants;
+  onCVDropdownChange?: (isOpen: boolean) => void;
 }
 
 export interface SectionProps {

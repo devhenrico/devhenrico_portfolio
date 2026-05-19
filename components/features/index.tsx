@@ -20,15 +20,15 @@ export function FeaturesSection() {
     {
       title: 'Código Limpo',
       description:
-        'Escrevo código organizado, legível e fácil de manter, seguindo boas práticas e padrões de desenvolvimento',
+        'Escrevo código organizado, legível e fácil de manter, seguindo boas práticas e padrões de desenvolvimento.',
       revealColor: [47, 164, 255],
       icon: <IconCode className="mb-2 h-10 w-10 text-white" />,
     },
     {
       title: 'Visão Completa',
       description:
-        'Com experiência em frontend e backend, entendo o produto de ponta a ponta — da interface ao banco de dados.',
-      revealColor: [6, 182, 212],
+        'Com experiência em frontend e backend, entendo o produto de ponta a ponta, da interface ao banco de dados.',
+      revealColor: [47, 164, 255],
       icon: <IconStack2 className="mb-2 h-10 w-10 text-white" />,
     },
     {
@@ -129,7 +129,7 @@ const Card = ({
         onHover?.();
       }}
       onMouseLeave={() => setHovered(false)}
-      className="group/canvas-card relative mx-auto flex h-120 w-full max-w-sm items-center justify-center border border-white/20 p-4 lg:h-140"
+      className="group/canvas-card relative mx-auto flex h-112 w-full max-w-sm items-center justify-center border border-white/20 p-4 sm:h-120 lg:h-140"
     >
       <Icon className="absolute -top-3 -left-3 h-6 w-6 text-white" />
       <Icon className="absolute -bottom-3 -left-3 h-6 w-6 text-white" />
@@ -167,7 +167,7 @@ const Card = ({
           {icon}
         </div>
         <h2
-          className={`relative z-10 mt-4 text-center text-3xl font-bold text-white transition duration-200 ${
+          className={`relative z-10 mt-4 text-center text-[1.65rem] font-bold text-white transition duration-200 sm:text-3xl ${
             effectiveReveal ? '-translate-y-2' : ''
           }`}
         >

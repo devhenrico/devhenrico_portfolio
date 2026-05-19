@@ -29,6 +29,7 @@ import { ScrollDownLottie } from './scroll-down-lottie';
 export const HeroContent = ({
   containerVariants,
   itemVariants,
+  onCVDropdownChange,
 }: HeroContentProps) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -50,6 +51,12 @@ export const HeroContent = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    onCVDropdownChange?.(showCVOptions);
+
+    return () => onCVDropdownChange?.(false);
+  }, [onCVDropdownChange, showCVOptions]);
 
   useGSAP(
     () => {
@@ -150,6 +157,7 @@ export const HeroContent = ({
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="rounded-2xl object-cover shadow-2xl"
                     loading="eager"
+                    fetchPriority="high"
                     onLoad={() => setIsImageLoaded(true)}
                   />
                 </motion.div>
@@ -172,6 +180,7 @@ export const HeroContent = ({
                 <HoverBorderGradient
                   containerClassName="group rounded-full"
                   className="flex items-center gap-2 text-xs font-medium transition-colors duration-500 group-hover:text-cyan-400 sm:text-sm"
+                  activeOnClick
                 >
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
@@ -254,10 +263,11 @@ export const HeroContent = ({
                 <Tooltip
                   content={
                     <div className="space-y-2">
-                      <div className="border-b border-neutral-200 pb-2 dark:border-neutral-700">
+                      <div className="pb-2">
                         <p className="text-sm font-semibold text-neutral-900 dark:text-white">
                           Dev Henrico
                         </p>
+                        <div className="mt-2 h-px w-full bg-linear-to-r from-transparent via-neutral-600 to-transparent" />
                       </div>
                       <div className="space-y-1">
                         <p className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -279,13 +289,14 @@ export const HeroContent = ({
                 <Tooltip
                   content={
                     <div className="space-y-3">
-                      <div className="border-b border-neutral-700 pb-2">
+                      <div className="pb-2">
                         <h3 className="mb-1 text-base font-semibold text-white">
                           FATEC Ferraz de Vasconcelos
                         </h3>
                         <p className="text-xs text-neutral-500">
                           Ferraz de Vasconcelos, São Paulo
                         </p>
+                        <div className="mt-2 h-px w-full bg-linear-to-r from-transparent via-neutral-600 to-transparent" />
                       </div>
                       <div className="space-y-2">
                         <div>

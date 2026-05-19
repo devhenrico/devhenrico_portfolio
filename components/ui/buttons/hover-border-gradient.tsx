@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,7 @@ type HoverBorderGradientProps = React.PropsWithChildren<
     className?: string;
     duration?: number;
     clockwise?: boolean;
+    activeOnClick?: boolean;
   } & React.HTMLAttributes<HTMLDivElement>
 >;
 
@@ -21,10 +22,15 @@ export function HoverBorderGradient({
   className,
   duration = 1,
   clockwise = true,
+  activeOnClick = false,
+  onClick,
   ...props
 }: HoverBorderGradientProps) {
   const [hovered, setHovered] = useState<boolean>(false);
+  const [active, setActive] = useState<boolean>(false);
   const [direction, setDirection] = useState<Direction>('TOP');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isHighlighted = hovered || active;
 
   const rotateDirection = useCallback(
     (currentDirection: Direction): Direction => {
@@ -51,21 +57,46 @@ export function HoverBorderGradient({
     'radial-gradient(75% 181.15942028985506% at 50% 50%, #06b6d4 0%, rgba(255, 255, 255, 0) 100%)';
 
   useEffect(() => {
-    if (!hovered) {
+    if (!isHighlighted) {
       const interval = setInterval(() => {
         setDirection((prevState) => rotateDirection(prevState));
       }, duration * 1000);
       return () => clearInterval(interval);
     }
-  }, [duration, hovered, rotateDirection]);
+  }, [duration, isHighlighted, rotateDirection]);
+
+  useEffect(() => {
+    if (!activeOnClick || !active) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setActive(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [active, activeOnClick]);
+
   return (
     <div
+      ref={containerRef}
       onMouseEnter={() => {
         setHovered(true);
       }}
       onMouseLeave={() => setHovered(false)}
+      onClick={(event) => {
+        if (activeOnClick) {
+          setActive((current) => !current);
+        }
+        onClick?.(event);
+      }}
       className={cn(
         'relative flex h-min w-fit cursor-default flex-col flex-nowrap content-center items-center justify-center gap-10 overflow-visible rounded-full border bg-black/20 box-decoration-clone p-px transition duration-500 hover:bg-black/10 dark:bg-white/20',
+        active && 'bg-black/10',
         containerClassName,
       )}
       {...props}
@@ -73,6 +104,7 @@ export function HoverBorderGradient({
       <div
         className={cn(
           'z-10 w-auto rounded-[inherit] bg-black px-4 py-2 text-white',
+          active && 'text-cyan-400',
           className,
         )}
       >
@@ -90,7 +122,7 @@ export function HoverBorderGradient({
         }}
         initial={{ background: movingMap[direction] }}
         animate={{
-          background: hovered
+          background: isHighlighted
             ? [movingMap[direction], highlight]
             : movingMap[direction],
         }}

@@ -5,7 +5,11 @@ import { Spotlight } from '@/components/ui/backgrounds/spotlight-new';
 import { SharedNavbar } from '@/components/layout/shared-navbar';
 import { HeroContent } from './hero-content';
 
-export function HeroSection() {
+export function HeroSection({
+  onCVDropdownChange,
+}: {
+  onCVDropdownChange?: (isOpen: boolean) => void;
+}) {
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -57,6 +61,7 @@ export function HeroSection() {
         containerVariants={containerVariants}
         itemVariants={itemVariants}
         imageVariants={imageVariants}
+        onCVDropdownChange={onCVDropdownChange}
       />
     </section>
   );
