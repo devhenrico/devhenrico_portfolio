@@ -79,7 +79,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} dark`}>
+    <html
+      lang="pt-BR"
+      className={`${inter.variable} dark`}
+      data-scroll-behavior="smooth"
+    >
       <head />
       <body className={inter.className}>
         <WebVitalsReporter />

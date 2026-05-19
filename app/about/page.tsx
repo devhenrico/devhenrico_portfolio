@@ -135,7 +135,7 @@ export default function AboutPage() {
                   </div>
                   <div className="group cursor-default">
                     <p className="text-3xl font-bold text-neutral-900 transition-colors duration-300 group-hover:text-cyan-500 dark:text-white dark:group-hover:text-cyan-400">
-                      +10
+                      +12
                     </p>
                     <p className="mt-1 text-sm font-medium text-neutral-500">
                       Projetos Construídos

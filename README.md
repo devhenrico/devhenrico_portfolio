@@ -1,4 +1,4 @@
-# 🚀 Dev Henrico — Portfólio (Website Minimalista)
+﻿# 🚀 Dev Henrico — Portfólio (Website Minimalista)
 
 > Portfólio minimalista construído com Next.js, React, TypeScript e Tailwind CSS. Apresenta animações fluidas com GSAP e Motion, design dark com acentos em cyan, carregamento lazy de seções, formulário de contato com anti-spam e showcase completo de projetos e tecnologias.
 
@@ -42,7 +42,7 @@ A página principal é uma SPA com scroll navegável entre seções:
 | Seção            | Rota interna    | Descrição                                                                                                                                                                  |
 | ---------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Hero**         | `/home`         | Apresentação com foto, título animado com `FlipWords`, badge de disponibilidade, stack de tecnologias e botões de ação (ver projetos e baixar/visualizar currículo em PDF) |
-| **Diferenciais** | —               | Cards interativos com `CanvasRevealEffect` que revelam os diferenciais: Código Limpo, Visão Completa e Foco no Usuário                                                     |
+| **Diferenciais** | `/features`               | Cards interativos com `CanvasRevealEffect` que revelam os diferenciais: Código Limpo, Visão Completa e Foco no Usuário                                                     |
 | **Projetos**     | `/projects`     | Grid de projetos com `BentoGrid`, headers customizados por projeto e badges de tech stack                                                                                  |
 | **Tecnologias**  | `/technologies` | Showcase de todas as tecnologias dominadas, agrupadas em: Frontend, Linguagens, Backend e Ferramentas                                                                      |
 | **Contato**      | `/contact`      | Formulário de contato com EmailJS, sistema de cooldown anti-spam e confetti de celebração ao enviar                                                                        |
@@ -50,7 +50,7 @@ A página principal é uma SPA com scroll navegável entre seções:
 
 ### Rota `/about` — Página Sobre
 
-Página separada com layout de duas colunas: foto com acentos SVG animados e biografia com diferenciais. Exibe estatísticas (+4 anos de aprendizado, +10 projetos construídos) e utiliza o componente `DotBackground`.
+Página separada com layout de duas colunas: foto com acentos SVG animados e biografia com diferenciais. Exibe estatísticas (+4 anos de aprendizado, +12 projetos construídos) e utiliza o componente `DotBackground`.
 
 ---
 
@@ -109,12 +109,12 @@ Página separada com layout de duas colunas: foto com acentos SVG animados e bio
 
 ### Core
 
-| Tecnologia   | Versão | Uso                              |
-| ------------ | ------ | -------------------------------- |
-| Next.js      | 16     | Framework principal (App Router) |
-| React        | 19     | Biblioteca de UI                 |
-| TypeScript   | 5      | Tipagem estática                 |
-| Tailwind CSS | 4      | Estilização utilitária           |
+| Tecnologia   | Uso                              |
+| ------------ | -------------------------------- |
+| Next.js      | Framework principal (App Router) |
+| React        | Biblioteca de UI                 |
+| TypeScript   | Tipagem estática                 |
+| Tailwind CSS | Estilização utilitária           |
 
 ### Animações
 

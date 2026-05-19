@@ -11,7 +11,7 @@ describe('AboutPage', () => {
       screen.getAllByText(/Desenvolvedor Frontend/i).length,
     ).toBeGreaterThan(0);
     expect(screen.getByText('+4')).toBeInTheDocument();
-    expect(screen.getByText('+10')).toBeInTheDocument();
+    expect(screen.getByText('+12')).toBeInTheDocument();
     expect(screen.getByLabelText('GitHub')).toHaveAttribute(
       'href',
       'https://github.com/devhenrico',
