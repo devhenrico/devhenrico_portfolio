@@ -86,7 +86,7 @@ test.describe('portfolio navigation', () => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('/');
 
-    await page.getByRole('button', { name: /Copiar E-mail/i }).click();
+    await page.getByRole('button', { name: /Copiar Email/i }).click();
 
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))

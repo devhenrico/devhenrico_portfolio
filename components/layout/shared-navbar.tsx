@@ -1,31 +1,98 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
 import { IconMenu2, IconX } from '@tabler/icons-react';
-import { navigationLinks, socialLinks } from '@/constants/navigation';
+import {
+  getSectionIdForRoute,
+  navigationLinks,
+  socialLinks,
+} from '@/constants/navigation';
 import { navigateToLandingRoute } from '@/lib/section-navigation';
 
 export const SharedNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [clickedSectionId, setClickedSectionId] = useState<string | null>(null);
+  const hasReachedClickedSectionRef = useRef(false);
   const pathname = usePathname();
-  const isLandingPage = pathname === '/';
+  const isLandingRoute = pathname === '/' || Boolean(getSectionIdForRoute(pathname));
+
+  useEffect(() => {
+    if (!isLandingRoute || !clickedSectionId) {
+      return;
+    }
+
+    let frameId = 0;
+
+    const updateActiveSection = () => {
+      cancelAnimationFrame(frameId);
+
+      frameId = requestAnimationFrame(() => {
+        const anchorY = window.innerHeight * 0.45;
+        const section = document.getElementById(clickedSectionId);
+        if (!section) return;
+
+        const { top, bottom } = section.getBoundingClientRect();
+        const isClickedSectionVisible = top <= anchorY && bottom >= anchorY;
+
+        if (isClickedSectionVisible) {
+          hasReachedClickedSectionRef.current = true;
+          return;
+        }
+
+        if (hasReachedClickedSectionRef.current) {
+          setClickedSectionId(null);
+          hasReachedClickedSectionRef.current = false;
+        }
+      });
+    };
+
+    updateActiveSection();
+
+    const mutationObserver = new MutationObserver(updateActiveSection);
+
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+      mutationObserver.disconnect();
+    };
+  }, [clickedSectionId, isLandingRoute]);
 
   const handleLinkClick = (
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
   ) => {
-    if (isLandingPage && navigateToLandingRoute(href)) {
-      event.preventDefault();
+    const sectionId = getSectionIdForRoute(href);
+
+    if (isLandingRoute && sectionId) {
+      hasReachedClickedSectionRef.current = false;
+      setClickedSectionId(sectionId);
+
+      if (navigateToLandingRoute(href)) {
+        event.preventDefault();
+      }
+    } else {
+      hasReachedClickedSectionRef.current = false;
+      setClickedSectionId(null);
     }
+
     setIsMobileMenuOpen(false);
   };
 
   const isActive = (href: string) => {
-    if (isLandingPage) return false;
+    if (isLandingRoute) {
+      const sectionId = getSectionIdForRoute(href);
+      return Boolean(sectionId && clickedSectionId === sectionId);
+    }
+
     return pathname === href;
   };
 

@@ -13,14 +13,14 @@ describe('ContactSection', () => {
     expect(screen.getByLabelText('E-mail')).toBeInTheDocument();
     expect(screen.getByLabelText('Mensagem')).toBeInTheDocument();
     expect(screen.getByText('henricosantos27@outlook.com')).toBeInTheDocument();
-    expect(screen.getByText('devhenrico')).toBeInTheDocument();
-    expect(screen.getByText('henrico-santos')).toBeInTheDocument();
+    expect(screen.getByText('@devhenrico')).toBeInTheDocument();
+    expect(screen.getByText('/henrico-santos')).toBeInTheDocument();
   });
 
   it('copies the email address from the contact card', () => {
     render(<ContactSection />);
 
-    fireEvent.click(screen.getByLabelText(/Copiar E-mail/i));
+    fireEvent.click(screen.getByLabelText(/Copiar Email/i));
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
       'henricosantos27@outlook.com',

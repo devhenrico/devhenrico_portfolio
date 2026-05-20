@@ -138,7 +138,7 @@ export const HeroContent = ({
       <div className="flex h-full w-full flex-col justify-center py-6 md:py-10">
         {/* Two Column Layout: Image Left, Content Right */}
         <div className="mx-auto w-full md:max-w-272 lg:max-w-284 xl:max-w-292">
-          <div className="grid w-full max-w-280 grid-cols-1 items-center justify-center gap-12 px-2 sm:px-4 md:grid-cols-[minmax(280px,440px)_minmax(0,640px)] md:gap-10 lg:gap-12">
+          <div className="grid w-full max-w-280 grid-cols-1 items-center justify-center gap-12 px-0 sm:px-4 md:grid-cols-[minmax(280px,440px)_minmax(0,640px)] md:gap-10 lg:gap-12">
             {/* Left Column - Image */}
             <div className="flex justify-center">
               <div className="relative h-85 w-full max-w-70 overflow-hidden rounded-2xl bg-neutral-900 sm:h-100 sm:max-w-[320px] md:h-105 md:max-w-85 lg:h-130 lg:max-w-105 xl:h-145 xl:max-w-115">
@@ -157,7 +157,6 @@ export const HeroContent = ({
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="rounded-2xl object-cover shadow-2xl"
                     loading="eager"
-                    fetchPriority="high"
                     onLoad={() => setIsImageLoaded(true)}
                   />
                 </motion.div>
@@ -171,7 +170,7 @@ export const HeroContent = ({
             </div>
 
             {/* Right Column - Content */}
-            <div className="flex w-full max-w-160 flex-col items-start text-left">
+            <div className="-mx-3 flex w-[calc(100%+1.5rem)] max-w-160 flex-col items-start text-left sm:mx-0 sm:w-full">
               {/* Hover Border Gradient Badge */}
               <motion.div
                 variants={itemVariants}

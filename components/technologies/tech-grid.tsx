@@ -28,7 +28,7 @@ export const TechGrid = () => {
       ),
       header: (
         <div className="flex h-full min-h-20 w-full flex-1 items-center justify-center rounded-xl p-2 sm:min-h-24 sm:p-4">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-5">
             <AnimatedTooltip
               items={frontendItems}
               itemClassName="w-10 h-10 sm:w-10 sm:h-10 md:w-15 md:h-15"
@@ -49,7 +49,7 @@ export const TechGrid = () => {
       ),
       header: (
         <div className="flex h-full min-h-20 w-full flex-1 items-center justify-center rounded-xl p-2 sm:min-h-24 sm:p-4">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-5">
             <AnimatedTooltip
               items={programmingLanguageItems}
               itemClassName="w-10 h-10 sm:w-10 sm:h-10 md:w-15 md:h-15"
@@ -70,7 +70,7 @@ export const TechGrid = () => {
       ),
       header: (
         <div className="flex h-full min-h-20 w-full flex-1 items-center justify-center rounded-xl p-2 sm:min-h-24 sm:p-4">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-5">
             <AnimatedTooltip
               items={backendItems}
               itemClassName="w-10 h-10 sm:w-10 sm:h-10 md:w-15 md:h-15"
@@ -91,7 +91,7 @@ export const TechGrid = () => {
       ),
       header: (
         <div className="flex h-full min-h-20 w-full flex-1 items-center justify-center rounded-xl p-2 sm:min-h-24 sm:p-4">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-5">
             <AnimatedTooltip
               items={toolsItems}
               itemClassName="w-10 h-10 sm:w-10 sm:h-10 md:w-15 md:h-15"

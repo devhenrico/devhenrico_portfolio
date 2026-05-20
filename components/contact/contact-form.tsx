@@ -356,11 +356,11 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             type="button"
             aria-label="Fechar modal"
             onClick={() => setShowConfirmDialog(false)}
-            className="absolute top-5 right-5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-500 transition-colors duration-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
+            className="absolute top-3 right-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-500 transition-colors duration-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
           >
             <IconX className="h-4 w-4" />
           </button>
-          <AlertDialogHeader className="items-center gap-3 text-center">
+          <AlertDialogHeader className="items-center gap-2 text-center">
             <AlertDialogTitle className="text-lg whitespace-nowrap text-neutral-900 sm:text-xl dark:text-white">
               Confirmar envio da mensagem
             </AlertDialogTitle>
@@ -389,7 +389,7 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel className="h-10 rounded-full border-neutral-200 bg-neutral-100 font-semibold text-neutral-900 hover:bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
+            <AlertDialogCancel className="h-11 items-center rounded-full border-neutral-200 bg-neutral-100 font-semibold text-neutral-900 hover:bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
               Cancelar
             </AlertDialogCancel>
             <AlertDialogAction

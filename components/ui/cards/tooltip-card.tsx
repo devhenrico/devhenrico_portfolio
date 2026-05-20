@@ -21,6 +21,34 @@ export const Tooltip = ({
   const positionX = useMotionValue(0);
   const positionY = useMotionValue(0);
   const lastMouseRef = useRef({ x: 0, y: 0 });
+  const mobileCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const isTouchLikeDevice = () =>
+    typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+
+  const clearMobileCloseTimer = () => {
+    if (!mobileCloseTimerRef.current) return;
+
+    clearTimeout(mobileCloseTimerRef.current);
+    mobileCloseTimerRef.current = null;
+  };
+
+  const showTemporarilyOnMobile = () => {
+    clearMobileCloseTimer();
+    setIsVisible(true);
+
+    mobileCloseTimerRef.current = setTimeout(() => {
+      setIsVisible(false);
+      mobileCloseTimerRef.current = null;
+    }, 5000);
+  };
+
+  const closeTooltip = useCallback(() => {
+    clearMobileCloseTimer();
+    setIsVisible(false);
+  }, []);
 
   useEffect(() => {
     if (isVisible && contentRef.current) {
@@ -75,42 +103,69 @@ export const Tooltip = ({
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouchLikeDevice()) return;
+
     setIsVisible(true);
     updateMousePosition(e.clientX, e.clientY);
   };
 
   const handleMouseLeave = () => {
-    setIsVisible(false);
+    if (isTouchLikeDevice()) return;
+
+    closeTooltip();
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isVisible) return;
+    if (!isVisible || isTouchLikeDevice()) return;
+
     updateMousePosition(e.clientX, e.clientY);
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
     updateMousePosition(touch.clientX, touch.clientY);
-    setIsVisible(true);
-  };
-
-  const handleTouchEnd = () => {
-    setTimeout(() => {
-      setIsVisible(false);
-    }, 2000);
+    showTemporarilyOnMobile();
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (window.matchMedia('(hover: none)').matches) {
+    if (isTouchLikeDevice()) {
       e.preventDefault();
-      if (isVisible) {
-        setIsVisible(false);
-      } else {
-        updateMousePosition(e.clientX, e.clientY);
-        setIsVisible(true);
-      }
+      updateMousePosition(e.clientX, e.clientY);
+      showTemporarilyOnMobile();
     }
   };
+
+  useEffect(() => {
+    return () => clearMobileCloseTimer();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+
+      if (
+        containerRef.current?.contains(target) ||
+        contentRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      closeTooltip();
+    };
+
+    window.addEventListener('scroll', closeTooltip, {
+      capture: true,
+      passive: true,
+    });
+    document.addEventListener('pointerdown', handlePointerDown);
+
+    return () => {
+      window.removeEventListener('scroll', closeTooltip, { capture: true });
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [closeTooltip, isVisible]);
 
   useEffect(() => {
     if (isVisible && contentRef.current) {
@@ -129,7 +184,6 @@ export const Tooltip = ({
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
       {children}
