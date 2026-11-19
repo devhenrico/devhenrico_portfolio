@@ -17,6 +17,7 @@ export interface ProjectProps {
   title: string;
   description: string;
   link: string;
+  liveDemo?: string;
   techStack: TechItem[];
   header?: ReactNode;
 }

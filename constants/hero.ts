@@ -12,7 +12,7 @@ export const heroTechStack: TechItem[] = [
     id: 1,
     name: 'React',
     designation: 'Biblioteca de UI',
-    image: 'https://techstack-generator.vercel.app/react-icon.svg',
+    image: '/assets/logos/techstack-generator/react-icon.svg',
   },
   {
     id: 2,
@@ -24,13 +24,13 @@ export const heroTechStack: TechItem[] = [
     id: 3,
     name: 'TypeScript',
     designation: 'Tipagem Estática',
-    image: 'https://techstack-generator.vercel.app/ts-icon.svg',
+    image: '/assets/logos/techstack-generator/ts-icon.svg',
   },
   {
     id: 4,
     name: 'C#',
     designation: 'Linguagem de Programação',
-    image: 'https://techstack-generator.vercel.app/csharp-icon.svg',
+    image: '/assets/logos/techstack-generator/csharp-icon.svg',
   },
   {
     id: 5,

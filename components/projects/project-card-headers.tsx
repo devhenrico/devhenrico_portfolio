@@ -24,11 +24,11 @@ export const StreamPlayHeader = () => (
   </div>
 );
 
-export const EconoAppHeader = () => (
+export const DownloadYouTubeHeader = () => (
   <div className="group relative flex h-full min-h-60 w-full flex-1 cursor-default overflow-hidden rounded-md bg-neutral-900">
     <Image
-      src="/assets/projects/econoapp.png"
-      alt="EconoApp personal finance assistant"
+      src="/assets/projects/download-youtube.png"
+      alt="Interface do Download YouTube"
       fill
       className="object-cover object-top opacity-90 transition-opacity duration-500"
     />
@@ -36,11 +36,11 @@ export const EconoAppHeader = () => (
   </div>
 );
 
-export const FRSemijoiasHeader = () => (
+export const ConstruindoSaberesHeader = () => (
   <div className="group relative flex h-full min-h-60 w-full flex-1 cursor-default overflow-hidden rounded-md bg-neutral-900">
     <Image
-      src="/assets/projects/fr-semijoias.png"
-      alt="FR Semijoias e-commerce"
+      src="/assets/projects/contruindo-saberes.png"
+      alt="Site da Clínica Construindo Saberes"
       fill
       className="object-cover object-top opacity-90 transition-opacity duration-500"
     />

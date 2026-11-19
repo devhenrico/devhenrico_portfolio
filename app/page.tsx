@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { IntroLoader } from '@/components/layout/intro-loader';
 import { Spotlight } from '@/components/ui/backgrounds/spotlight-new';
 import { HeroSection } from '@/components/hero';
-import { ScrollProgress } from '@/components/ui/effects/scroll-progress';
 import { getSectionIdForRoute } from '@/constants/navigation';
 import { scrollToLandingSection } from '@/lib/section-navigation';
 import { cn } from '@/lib/utils';
@@ -118,15 +117,10 @@ export default function Home() {
     <main className="relative mx-auto flex flex-col items-center justify-center overflow-hidden bg-black px-4 text-white transition-colors duration-300 sm:px-10">
       <IntroLoader />
 
-      <ScrollProgress className="bg-linear-to-r from-transparent via-cyan-500 to-transparent" />
-
       <Spotlight />
       <div className="w-full">
         <div
-          className={cn(
-            'relative',
-            isHeroCVDropdownOpen ? 'z-20' : 'z-auto',
-          )}
+          className={cn('relative', isHeroCVDropdownOpen ? 'z-20' : 'z-auto')}
         >
           <HeroSection onCVDropdownChange={setIsHeroCVDropdownOpen} />
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { IconArrowRight, IconSend, IconX } from '@tabler/icons-react';
+import { IconArrowRight, IconSend } from '@tabler/icons-react';
 import emailjs from '@emailjs/browser';
 import { Label } from '@/components/ui/primitives/label';
 import { Input } from '@/components/ui/primitives/input';
@@ -24,28 +24,33 @@ import type { SectionProps } from '@/types';
 
 const COOLDOWN_DURATIONS = [2 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000];
 const RESET_DURATION = 60 * 60 * 1000;
+const EMPTY_COOLDOWN = { attempts: 0, cooldownEnd: 0, countdown: 0 };
+const SEND_ERROR = 'Não foi possível enviar sua mensagem. Tente novamente.';
 
 const loadCooldownState = () => {
-  if (typeof window === 'undefined')
-    return { attempts: 0, cooldownEnd: 0, countdown: 0 };
+  try {
+    const storedData = localStorage.getItem('contactCooldown');
+    if (!storedData) return EMPTY_COOLDOWN;
 
-  const storedData = localStorage.getItem('contactCooldown');
-  if (!storedData) return { attempts: 0, cooldownEnd: 0, countdown: 0 };
+    const { lastSendTime, attempts, cooldownEnd } = JSON.parse(storedData);
+    const now = Date.now();
+    if (
+      !Number.isFinite(lastSendTime) ||
+      !Number.isFinite(cooldownEnd) ||
+      !Number.isSafeInteger(attempts) ||
+      attempts < 0 ||
+      now - lastSendTime > RESET_DURATION
+    ) {
+      return EMPTY_COOLDOWN;
+    }
 
-  const { lastSendTime, attempts, cooldownEnd } = JSON.parse(storedData);
-  const now = Date.now();
-
-  if (now - lastSendTime > RESET_DURATION) {
-    localStorage.removeItem('contactCooldown');
-    return { attempts: 0, cooldownEnd: 0, countdown: 0 };
-  } else if (cooldownEnd > now) {
     return {
       attempts,
       cooldownEnd,
-      countdown: Math.ceil((cooldownEnd - now) / 1000),
+      countdown: Math.max(0, Math.ceil((cooldownEnd - now) / 1000)),
     };
-  } else {
-    return { attempts, cooldownEnd: 0, countdown: 0 };
+  } catch {
+    return EMPTY_COOLDOWN;
   }
 };
 
@@ -117,34 +122,34 @@ TextareaInput.displayName = 'TextareaInput';
 export const ContactForm = ({ itemVariants }: SectionProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const form = useRef<HTMLFormElement>(null);
+  const formHeading = useRef<HTMLHeadingElement>(null);
+  const submitButton = useRef<HTMLButtonElement>(null);
+  const sending = useRef(false);
   const [loading, setLoading] = useState(false);
-  const [alertState, setAlertState] = useState<{
-    isVisible: boolean;
-    title: string;
-    description: string;
-    variant: 'default' | 'destructive' | 'success';
-  }>({
-    isVisible: false,
-    title: '',
-    description: '',
-    variant: 'default',
-  });
-
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [sendError, setSendError] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(
-    () => loadCooldownState().cooldownEnd,
-  );
-  const [attemptCount, setAttemptCount] = useState(
-    () => loadCooldownState().attempts,
-  );
-  const [countdown, setCountdown] = useState(
-    () => loadCooldownState().countdown,
-  );
+  const [confirmationEmail, setConfirmationEmail] = useState('');
+  const [cooldown, setCooldown] = useState(EMPTY_COOLDOWN);
+  const { attempts, countdown } = cooldown;
+  const waitDuration =
+    COOLDOWN_DURATIONS[Math.min(attempts, COOLDOWN_DURATIONS.length - 1)];
+
+  useEffect(() => {
+    const timer = setTimeout(() => setCooldown(loadCooldownState()), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
+        setCooldown((current) => ({
+          ...current,
+          countdown: Math.max(
+            0,
+            Math.ceil((current.cooldownEnd - Date.now()) / 1000),
+          ),
+        }));
       }, 1000);
       return () => clearTimeout(timer);
     }
@@ -158,15 +163,25 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (cooldownTime > 0 && countdown > 0) {
-      return;
-    }
+    if (sending.current || countdown > 0) return;
+    setConfirmationEmail(
+      String(new FormData(e.currentTarget).get('email') ?? ''),
+    );
+    setSendError(false);
+    setShowSuccess(false);
     setShowConfirmDialog(true);
   };
 
-  const sendEmail = () => {
-    setShowConfirmDialog(false);
+  const sendEmail = async () => {
+    if (!form.current || sending.current) return;
+    const formData = new FormData(form.current);
+    const name = String(formData.get('name') ?? '');
+    const email = String(formData.get('email') ?? '');
+    const message = String(formData.get('message') ?? '');
+
+    sending.current = true;
     setLoading(true);
+    setSendError(false);
 
     const serviceId =
       process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_y3wm8nt';
@@ -175,91 +190,65 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
     const publicKey =
       process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'XabdOeH4ulaupnrdS';
 
-    if (form.current) {
-      const formData = new FormData(form.current);
-      const name = formData.get('name') as string;
-      const email = formData.get('email') as string;
-      const message = formData.get('message') as string;
-
-      const templateParams = {
-        name: name,
-        email: email,
-        title: 'Contato do portfólio',
-        time: new Date().toLocaleString(),
-        message: `${message}\n\nE-mail do remetente: ${email}`,
-      };
-
-      emailjs.send(serviceId, templateId, templateParams, publicKey).then(
-        (result) => {
-          console.log(result.text);
-          setLoading(false);
-          setAlertState({
-            isVisible: true,
-            title: 'Sucesso!',
-            description: 'Sua mensagem foi enviada com sucesso.',
-            variant: 'success',
-          });
-          form.current?.reset();
-
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#06b6d4', '#3b82f6', '#ffffff'],
-          });
-
-          const now = Date.now();
-          const newAttemptCount = attemptCount + 1;
-          const cooldownIndex = Math.min(
-            newAttemptCount - 1,
-            COOLDOWN_DURATIONS.length - 1,
-          );
-          const newCooldownEnd = now + COOLDOWN_DURATIONS[cooldownIndex];
-
-          localStorage.setItem(
-            'contactCooldown',
-            JSON.stringify({
-              lastSendTime: now,
-              attempts: newAttemptCount,
-              cooldownEnd: newCooldownEnd,
-            }),
-          );
-
-          setAttemptCount(newAttemptCount);
-          setCooldownTime(newCooldownEnd);
-          setCountdown(Math.ceil(COOLDOWN_DURATIONS[cooldownIndex] / 1000));
-
-          setTimeout(
-            () => setAlertState((prev) => ({ ...prev, isVisible: false })),
-            5000,
-          );
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          name,
+          email,
+          title: 'Contato do portfólio',
+          time: new Date().toLocaleString(),
+          message: `${message}\n\nE-mail do remetente: ${email}`,
         },
-        (error) => {
-          console.log(error.text);
-          setLoading(false);
-          setAlertState({
-            isVisible: true,
-            title: 'Erro',
-            description: 'Algo deu errado. Tente novamente.',
-            variant: 'destructive',
-          });
-          setTimeout(
-            () => setAlertState((prev) => ({ ...prev, isVisible: false })),
-            5000,
-          );
-        },
+        publicKey,
       );
+    } catch {
+      setSendError(true);
+      return;
+    } finally {
+      sending.current = false;
+      setLoading(false);
     }
+
+    const lastSendTime = Date.now();
+    const cooldownEnd = lastSendTime + waitDuration;
+    const nextAttempts = attempts + 1;
+    setCooldown({
+      attempts: nextAttempts,
+      cooldownEnd,
+      countdown: waitDuration / 1000,
+    });
+
+    try {
+      localStorage.setItem(
+        'contactCooldown',
+        JSON.stringify({ lastSendTime, attempts: nextAttempts, cooldownEnd }),
+      );
+    } catch {
+      // The in-memory cooldown still applies when storage is unavailable.
+    }
+
+    form.current?.reset();
+    setShowConfirmDialog(false);
+    setShowSuccess(true);
+    confetti({
+      disableForReducedMotion: true,
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#06b6d4', '#3b82f6', '#ffffff'],
+    });
   };
 
   return (
     <>
       <AnimatedAlert
-        title={alertState.title}
-        description={alertState.description}
-        variant={alertState.variant}
-        isVisible={alertState.isVisible}
-        onClose={() => setAlertState((prev) => ({ ...prev, isVisible: false }))}
+        title="Mensagem enviada"
+        description="Sua mensagem foi enviada com sucesso."
+        variant="success"
+        isVisible={showSuccess}
+        onClose={() => setShowSuccess(false)}
       />
 
       {/* Contact Form - Theme aware */}
@@ -273,7 +262,11 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors duration-300 group-hover:border-white/20">
               <IconSend className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-lg font-semibold text-white">
+            <h3
+              ref={formHeading}
+              tabIndex={-1}
+              className="scroll-mt-20 text-lg font-semibold text-white"
+            >
               Enviar uma mensagem
             </h3>
           </div>
@@ -282,7 +275,7 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             <LabelInputContainer>
               <Label
                 htmlFor="name"
-                className="text-sm font-medium text-neutral-600 dark:text-neutral-500"
+                className="text-sm font-medium text-neutral-600 dark:text-neutral-300"
               >
                 Nome
               </Label>
@@ -291,6 +284,8 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
                 name="name"
                 placeholder="Seu nome"
                 type="text"
+                autoComplete="name"
+                readOnly={loading}
                 required
                 className="rounded-xl border-neutral-200 bg-neutral-50 px-4 py-3 text-neutral-900 transition-all duration-200 placeholder:text-neutral-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/10 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-white dark:placeholder:text-neutral-600 dark:focus:border-cyan-500/40"
               />
@@ -299,7 +294,7 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             <LabelInputContainer>
               <Label
                 htmlFor="email"
-                className="text-sm font-medium text-neutral-600 dark:text-neutral-500"
+                className="text-sm font-medium text-neutral-600 dark:text-neutral-300"
               >
                 E-mail
               </Label>
@@ -308,6 +303,8 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
                 name="email"
                 placeholder="seu@email.com"
                 type="email"
+                autoComplete="email"
+                readOnly={loading}
                 required
                 className="rounded-xl border-neutral-200 bg-neutral-50 px-4 py-3 text-neutral-900 transition-all duration-200 placeholder:text-neutral-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/10 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-white dark:placeholder:text-neutral-600 dark:focus:border-cyan-500/40"
               />
@@ -316,13 +313,14 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             <LabelInputContainer>
               <Label
                 htmlFor="message"
-                className="text-sm font-medium text-neutral-600 dark:text-neutral-500"
+                className="text-sm font-medium text-neutral-600 dark:text-neutral-300"
               >
                 Mensagem
               </Label>
               <TextareaInput
                 id="message"
                 name="message"
+                readOnly={loading}
                 placeholder="Sua mensagem..."
                 className="min-h-30 resize-none rounded-xl border-neutral-200 bg-neutral-50 px-4 py-3 text-neutral-900 transition-all duration-200 placeholder:text-neutral-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/10 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-white dark:placeholder:text-neutral-600 dark:focus:border-cyan-500/40"
                 required
@@ -330,14 +328,15 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
             </LabelInputContainer>
 
             <button
+              ref={submitButton}
               type="submit"
-              disabled={loading || (countdown > 0 && cooldownTime > 0)}
+              disabled={loading || countdown > 0}
               className="group relative z-20 mt-8 flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-white pr-2 pl-8 font-semibold text-black transition-all duration-300 hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span className="flex-1 text-center">
                 {loading
                   ? 'Enviando...'
-                  : countdown > 0 && cooldownTime > 0
+                  : countdown > 0
                     ? `Aguarde ${formatTime(countdown)}`
                     : 'Enviar mensagem'}
               </span>
@@ -345,61 +344,66 @@ export const ContactForm = ({ itemVariants }: SectionProps) => {
                 <IconArrowRight className="h-4 w-4" />
               </span>
             </button>
+            {!showConfirmDialog && sendError && (
+              <p role="alert" className="text-sm text-red-300">
+                {SEND_ERROR}
+              </p>
+            )}
           </form>
         </div>
       </motion.div>
 
       {/* Confirmation Dialog */}
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <AlertDialogContent className="gap-5 rounded-2xl border-neutral-200 bg-white p-6 pt-10 dark:border-neutral-800 dark:bg-neutral-900">
-          <button
-            type="button"
-            aria-label="Fechar modal"
-            onClick={() => setShowConfirmDialog(false)}
-            className="absolute top-3 right-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-500 transition-colors duration-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-          >
-            <IconX className="h-4 w-4" />
-          </button>
-          <AlertDialogHeader className="items-center gap-2 text-center">
-            <AlertDialogTitle className="text-lg whitespace-nowrap text-neutral-900 sm:text-xl dark:text-white">
+        <AlertDialogContent
+          className="max-h-[calc(100dvh-2rem)] gap-5 overflow-y-auto rounded-lg border-neutral-200 bg-white p-5 sm:max-w-md sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            const target = submitButton.current?.disabled
+              ? formHeading.current
+              : submitButton.current;
+            target?.focus();
+          }}
+        >
+          <AlertDialogHeader className="text-left">
+            <AlertDialogTitle className="text-lg tracking-normal text-neutral-900 sm:text-xl dark:text-white">
               Confirmar envio da mensagem
             </AlertDialogTitle>
-            <AlertDialogDescription asChild>
-              <div className="w-full space-y-4 text-neutral-600 dark:text-neutral-400">
-                <p>Tem certeza que deseja enviar esta mensagem?</p>
-                {attemptCount < 3 && (
-                  <div className="mt-4 w-full rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">
-                    <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
-                      Aviso anti-spam:
-                    </p>
-                    <p className="mt-1 text-sm text-amber-600 dark:text-amber-300/80">
-                      Depois de enviar, você precisará aguardar{' '}
-                      <span className="font-semibold">
-                        {attemptCount === 0
-                          ? '2 minutos'
-                          : attemptCount === 1
-                            ? '5 minutos'
-                            : '10 minutos'}
-                      </span>{' '}
-                      antes de enviar outra mensagem.
-                    </p>
-                  </div>
-                )}
-              </div>
+            <AlertDialogDescription className="text-neutral-600 dark:text-neutral-300">
+              Após o envio, aguarde {waitDuration / 60_000} minutos para enviar
+              outra mensagem.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel className="h-11 items-center rounded-full border-neutral-200 bg-neutral-100 font-semibold text-neutral-900 hover:bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
-              Cancelar
+          <div className="min-w-0 rounded-md border border-neutral-200 px-3 py-2 dark:border-neutral-700">
+            <p className="text-sm text-neutral-600 dark:text-neutral-300">
+              Seu e-mail
+            </p>
+            <p className="text-sm font-medium wrap-anywhere text-neutral-900 dark:text-white">
+              {confirmationEmail}
+            </p>
+          </div>
+          {sendError && (
+            <p role="alert" className="text-sm text-red-700 dark:text-red-300">
+              {SEND_ERROR}
+            </p>
+          )}
+          <div role="status" className="sr-only">
+            {loading ? 'Enviando mensagem...' : ''}
+          </div>
+          <AlertDialogFooter className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <AlertDialogCancel className="h-11 rounded-md border-neutral-200 bg-neutral-100 font-semibold whitespace-normal text-neutral-900 hover:bg-neutral-200 focus-visible:ring-cyan-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
+              {loading ? 'Fechar' : 'Cancelar'}
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={sendEmail}
-              className="group relative h-11 rounded-full bg-neutral-900 px-6 font-semibold text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-100"
+              aria-disabled={loading}
+              onClick={(event) => {
+                event.preventDefault();
+                void sendEmail();
+              }}
+              className="h-11 rounded-md bg-neutral-900 font-semibold whitespace-normal text-white hover:bg-neutral-800 focus-visible:ring-cyan-500 aria-disabled:cursor-wait aria-disabled:opacity-70 dark:bg-white dark:text-black dark:hover:bg-neutral-100"
             >
-              <span>Enviar mensagem</span>
-              <span className="absolute right-1.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors duration-300 group-hover:bg-neutral-800">
-                <IconArrowRight className="h-4 w-4" />
-              </span>
+              <span>{loading ? 'Enviando...' : 'Enviar mensagem'}</span>
+              <IconSend aria-hidden="true" className="h-4 w-4" />
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

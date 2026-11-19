@@ -5,7 +5,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 export const ScrollDownLottie = () => {
   return (
     <div
-      className="pointer-events-none absolute bottom-8 left-1/2 z-20 hidden h-11 w-11 -translate-x-1/2 opacity-80 motion-reduce:hidden sm:block"
+      className="pointer-events-none absolute bottom-8 left-1/2 z-20 hidden h-11 w-11 -translate-x-1/2 opacity-80 motion-reduce:hidden sm:block [@media(max-height:720px)]:hidden"
       aria-hidden="true"
     >
       <DotLottieReact

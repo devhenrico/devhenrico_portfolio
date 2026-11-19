@@ -1,5 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import emailjs from '@emailjs/browser';
 import { ContactSection } from '@/components/contact';
 
 describe('ContactSection', () => {
@@ -44,8 +51,38 @@ describe('ContactSection', () => {
     expect(
       screen.getByRole('heading', { name: /Confirmar envio da mensagem/i }),
     ).toBeInTheDocument();
-    expect(vi.mocked(navigator.clipboard.writeText)).not.toHaveBeenCalledWith(
-      'henrico@example.com',
+    expect(emailjs.send).not.toHaveBeenCalled();
+  });
+
+  it('keeps the message available for retry if sending fails', async () => {
+    vi.mocked(emailjs.send).mockRejectedValueOnce(new Error('network error'));
+    render(<ContactSection />);
+    fireEvent.change(screen.getByLabelText('Nome'), {
+      target: { value: 'Henrico' },
+    });
+    fireEvent.change(screen.getByLabelText('E-mail'), {
+      target: { value: 'henrico@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText('Mensagem'), {
+      target: { value: 'Mensagem de teste.' },
+    });
+
+    const submit = screen.getByRole('button', { name: 'Enviar mensagem' });
+    fireEvent.click(submit);
+    const dialog = screen.getByRole('alertdialog');
+    expect(within(dialog).getByText('henrico@example.com')).toBeInTheDocument();
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Enviar mensagem' }),
     );
+
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent(
+      'Não foi possível enviar',
+    );
+    expect(
+      within(dialog).getByRole('button', { name: 'Enviar mensagem' }),
+    ).toHaveAttribute('aria-disabled', 'false');
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancelar' }));
+    await waitFor(() => expect(submit).toHaveFocus());
+    expect(screen.getByLabelText('Mensagem')).toHaveValue('Mensagem de teste.');
   });
 });

@@ -59,7 +59,7 @@ export function PreFooterCTA() {
               href="https://wa.me/5511990106057"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 min-w-44 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 font-semibold text-white transition-all duration-300 hover:bg-[#1ebe5d]"
+              className="inline-flex h-12 min-w-44 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 font-semibold text-neutral-950 transition-all duration-300 hover:bg-[#1ebe5d]"
             >
               <span>Iniciar conversa</span>
               <IconBrandWhatsapp className="h-5 w-5" strokeWidth={2} />

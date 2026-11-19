@@ -45,13 +45,6 @@ export const AnimatedTooltip = ({
     x.set(xPos);
   };
 
-  const getImageClassName = (item: (typeof items)[number]) =>
-    cn(
-      'relative m-0! h-full w-full object-contain object-center p-0! transition duration-500 group-hover:z-30 group-hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]',
-      item.image?.includes('techstack-generator.vercel.app') && 'scale-135',
-      item.imageClassName,
-    );
-
   return (
     <>
       {items.map((item) => (
@@ -108,7 +101,10 @@ export const AnimatedTooltip = ({
                 width={100}
                 src={item.image || ''}
                 alt={item.name}
-                className={getImageClassName(item)}
+                className={cn(
+                  'relative m-0! h-full w-full object-contain object-center p-0! transition duration-500 group-hover:z-30 group-hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]',
+                  item.imageClassName,
+                )}
               />
             )}
           </div>

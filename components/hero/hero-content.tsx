@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useId, useRef } from 'react';
 import {
   IconBulb,
   IconPalette,
@@ -22,6 +22,7 @@ import { Tooltip } from '@/components/ui/cards/tooltip-card';
 import { FlipWords } from '@/components/ui/text/flip-words';
 import { heroRotatingWords, heroTechStack } from '@/constants/hero';
 import { navigateToLandingRoute } from '@/lib/section-navigation';
+import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import type { HeroContentProps } from '@/types';
 import { HeroClock } from './hero-clock';
 import { ScrollDownLottie } from './scroll-down-lottie';
@@ -38,6 +39,14 @@ export const HeroContent = ({
 
   const [showCVOptions, setShowCVOptions] = useState(false);
   const cvDropdownRef = useRef<HTMLDivElement>(null);
+  const cvButtonRef = useRef<HTMLButtonElement>(null);
+  const cvOptionsId = useId();
+  const reduceMotion = usePrefersReducedMotion();
+
+  const closeCVOptions = () => {
+    setShowCVOptions(false);
+    cvButtonRef.current?.focus();
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -48,8 +57,9 @@ export const HeroContent = ({
         setShowCVOptions(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handleClickOutside);
+    return () =>
+      document.removeEventListener('pointerdown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -63,6 +73,11 @@ export const HeroContent = ({
       if (!gridLinesRef.current) return;
 
       const lines = gridLinesRef.current.children;
+
+      if (reduceMotion) {
+        gsap.set(lines, { opacity: 1 });
+        return;
+      }
 
       gsap.fromTo(
         [lines[0], lines[1]],
@@ -106,7 +121,7 @@ export const HeroContent = ({
         },
       );
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [reduceMotion], revertOnUpdate: true },
   );
 
   const handleProjectsClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -117,9 +132,11 @@ export const HeroContent = ({
 
   return (
     <motion.div
+      id="conteudo"
+      tabIndex={-1}
       ref={containerRef}
-      className="relative flex flex-1 flex-col items-center justify-center"
-      initial="hidden"
+      className="relative flex flex-1 scroll-mt-16 flex-col items-center justify-center"
+      initial={reduceMotion ? false : 'hidden'}
       animate="visible"
       variants={containerVariants}
     >
@@ -135,15 +152,17 @@ export const HeroContent = ({
           <div className="absolute inset-x-0 mx-auto h-px w-3/4 bg-linear-to-r from-transparent via-cyan-500 to-transparent md:w-40" />
         </div>
       </div>
-      <div className="flex h-full w-full flex-col justify-center py-6 md:py-10">
+      <div className="flex h-full w-full flex-col justify-center py-6 md:pt-20 md:pb-14">
         {/* Two Column Layout: Image Left, Content Right */}
         <div className="mx-auto w-full md:max-w-272 lg:max-w-284 xl:max-w-292">
-          <div className="grid w-full max-w-280 grid-cols-1 items-center justify-center gap-12 px-0 sm:px-4 md:grid-cols-[minmax(280px,440px)_minmax(0,640px)] md:gap-10 lg:gap-12">
+          <div className="grid w-full max-w-280 grid-cols-1 items-center gap-10 sm:px-4 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-8 xl:gap-12">
             {/* Left Column - Image */}
             <div className="flex justify-center">
-              <div className="relative h-85 w-full max-w-70 overflow-hidden rounded-2xl bg-neutral-900 sm:h-100 sm:max-w-[320px] md:h-105 md:max-w-85 lg:h-130 lg:max-w-105 xl:h-145 xl:max-w-115">
+              <div className="relative h-85 w-full max-w-70 overflow-hidden rounded-2xl bg-neutral-900 sm:h-100 sm:max-w-80 md:h-[min(28rem,65svh)] md:max-w-100 xl:h-[min(34rem,69svh)] xl:max-w-110">
                 <motion.div
-                  initial={{ opacity: 0, filter: 'blur(10px)' }}
+                  initial={
+                    reduceMotion ? false : { opacity: 0, filter: 'blur(10px)' }
+                  }
                   animate={
                     isImageLoaded ? { opacity: 1, filter: 'blur(0px)' } : {}
                   }
@@ -163,14 +182,17 @@ export const HeroContent = ({
                 {isImageLoaded && <HeroClock />}
                 {!isImageLoaded && (
                   <div className="absolute inset-0 flex items-center justify-center bg-neutral-900">
-                    <div className="h-10 w-10 animate-spin rounded-full border-2 border-cyan-500/20 border-t-cyan-500" />
+                    <div
+                      aria-hidden="true"
+                      className="h-10 w-10 rounded-full border-2 border-cyan-500/20 border-t-cyan-500 motion-safe:animate-spin"
+                    />
                   </div>
                 )}
               </div>
             </div>
 
             {/* Right Column - Content */}
-            <div className="-mx-3 flex w-[calc(100%+1.5rem)] max-w-160 flex-col items-start text-left sm:mx-0 sm:w-full">
+            <div className="flex w-full max-w-160 min-w-0 flex-col items-start text-left">
               {/* Hover Border Gradient Badge */}
               <motion.div
                 variants={itemVariants}
@@ -179,10 +201,12 @@ export const HeroContent = ({
                 <HoverBorderGradient
                   containerClassName="group rounded-full"
                   className="flex items-center gap-2 text-xs font-medium transition-colors duration-500 group-hover:text-cyan-400 sm:text-sm"
-                  activeOnClick
                 >
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
+                  <span
+                    aria-hidden="true"
+                    className="relative flex h-2.5 w-2.5 shrink-0"
+                  >
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 motion-safe:animate-ping"></span>
                     <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cyan-500"></span>
                   </span>
                   Disponível para Oportunidades
@@ -191,72 +215,75 @@ export const HeroContent = ({
 
               <motion.h1
                 variants={itemVariants}
-                className="relative z-10 mb-6 w-full bg-linear-to-b from-white to-neutral-500 bg-clip-text text-[1.7rem] leading-[1.1] font-bold tracking-tight text-transparent sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl"
+                className="relative z-10 mb-6 w-full text-2xl leading-[1.12] font-bold tracking-normal text-white sm:text-4xl md:text-3xl lg:text-4xl xl:text-[2.75rem]"
               >
-                <div className="flex flex-nowrap items-center justify-start gap-1.5 sm:gap-2">
-                  <span className="me-1 inline-block whitespace-nowrap text-white sm:me-2">
-                    Transformando
-                  </span>
+                <span className="sr-only">
+                  Transformando ideias em experiências modernas e funcionais
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="flex flex-wrap items-center gap-x-2"
+                >
+                  <span>Transformando</span>
 
-                  <motion.div
-                    key={currentWordIndex}
-                    initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="shrink-0 rounded-lg border border-neutral-800 bg-neutral-900/50 p-1 text-cyan-400"
-                  >
-                    {currentWordIndex === 0 && (
-                      <IconBulb
-                        className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
-                        stroke={2}
-                      />
-                    )}
-                    {currentWordIndex === 1 && (
-                      <IconCode
-                        className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
-                        stroke={2}
-                      />
-                    )}
-                    {currentWordIndex === 2 && (
-                      <IconPalette
-                        className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
-                        stroke={2}
-                      />
-                    )}
-                    {currentWordIndex === 3 && (
-                      <IconTargetArrow
-                        className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
-                        stroke={2}
-                      />
-                    )}
-                  </motion.div>
-
-                  <div className="min-w-17.5 sm:min-w-25 md:min-w-30 lg:min-w-40 xl:min-w-45">
+                  <span className="inline-flex min-w-[9ch] items-center gap-2">
+                    <motion.span
+                      key={currentWordIndex}
+                      initial={
+                        reduceMotion
+                          ? false
+                          : { opacity: 0, scale: 0.5, rotate: -20 }
+                      }
+                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="shrink-0 rounded-lg border border-neutral-800 bg-neutral-900/50 p-1 text-cyan-400"
+                    >
+                      {currentWordIndex === 0 && (
+                        <IconBulb
+                          className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
+                          stroke={2}
+                        />
+                      )}
+                      {currentWordIndex === 1 && (
+                        <IconCode
+                          className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
+                          stroke={2}
+                        />
+                      )}
+                      {currentWordIndex === 2 && (
+                        <IconPalette
+                          className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
+                          stroke={2}
+                        />
+                      )}
+                      {currentWordIndex === 3 && (
+                        <IconTargetArrow
+                          className="h-4 w-4 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9"
+                          stroke={2}
+                        />
+                      )}
+                    </motion.span>
                     <FlipWords
-                      words={[...heroRotatingWords]}
+                      words={heroRotatingWords}
                       duration={2500}
                       className="m-0! p-0! font-bold whitespace-nowrap text-white"
                       onWordChange={setCurrentWordIndex}
                     />
-                  </div>
-                </div>
-
-                <div className="block whitespace-nowrap">
-                  <span className="inline-block text-white">
-                    em Novas Experiências
                   </span>
-                </div>
+                </span>
 
-                <div className="block whitespace-nowrap">
-                  <span className="inline-block bg-linear-to-bl from-cyan-400 to-white bg-clip-text text-transparent">
-                    Modernas e funcionais
-                  </span>
-                </div>
+                <span aria-hidden="true" className="block">
+                  em Novas Experiências
+                </span>
+
+                <span aria-hidden="true" className="block text-cyan-300">
+                  Modernas e funcionais
+                </span>
               </motion.h1>
 
               <motion.div
                 variants={itemVariants}
-                className="relative z-10 mb-6 max-w-2xl text-lg font-normal text-neutral-600 md:mb-8 md:text-xl dark:text-neutral-300"
+                className="relative z-10 mb-6 max-w-2xl text-base font-normal text-neutral-300 sm:text-lg xl:text-xl"
               >
                 Sou{' '}
                 <Tooltip
@@ -347,7 +374,7 @@ export const HeroContent = ({
                       className="block w-full scroll-smooth"
                     >
                       <div className="group relative inline-flex h-12 w-full overflow-hidden rounded-full p-px focus:outline-none">
-                        <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#22d3ee_0%,#083344_50%,#22d3ee_100%)]" />
+                        <span className="absolute inset-[-1000%] bg-[conic-gradient(from_90deg_at_50%_50%,#22d3ee_0%,#083344_50%,#22d3ee_100%)] motion-safe:animate-[spin_2s_linear_infinite]" />
                         <span className="group inline-flex h-full w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-black px-6 py-1 text-sm font-medium text-white backdrop-blur-3xl transition-all duration-300">
                           <span>Ver Projetos</span>
                           <IconArrowNarrowDown className="h-4 w-4" />
@@ -356,36 +383,55 @@ export const HeroContent = ({
                     </a>
 
                     {/* Download Curriculum / CV Options Button */}
-                    <div className="relative block w-full" ref={cvDropdownRef}>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setShowCVOptions(!showCVOptions)}
-                        className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-cyan-400 px-6 text-sm font-bold text-black shadow-xl shadow-cyan-500/20 transition-all duration-300 hover:bg-cyan-300"
+                    <div
+                      className="relative block w-full"
+                      ref={cvDropdownRef}
+                      onBlur={(event) => {
+                        if (
+                          !event.currentTarget.contains(event.relatedTarget)
+                        ) {
+                          setShowCVOptions(false);
+                        }
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Escape' && showCVOptions) {
+                          event.stopPropagation();
+                          closeCVOptions();
+                        }
+                      }}
+                    >
+                      <button
+                        ref={cvButtonRef}
+                        type="button"
+                        aria-expanded={showCVOptions}
+                        aria-controls={cvOptionsId}
+                        onClick={() => setShowCVOptions((open) => !open)}
+                        className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-cyan-400 px-3 text-sm font-bold text-black shadow-xl shadow-cyan-500/20 focus-visible:ring-cyan-300"
                       >
-                        <IconDownload className="h-4 w-4" />
+                        <IconDownload
+                          aria-hidden="true"
+                          className="h-4 w-4 shrink-0"
+                        />
                         <span>Baixar Currículo</span>
                         <IconChevronDown
-                          className={`h-4 w-4 transition-transform duration-500 ${showCVOptions ? 'rotate-180' : ''}`}
+                          aria-hidden="true"
+                          className={`h-4 w-4 shrink-0 motion-safe:transition-transform ${showCVOptions ? 'rotate-180' : ''}`}
                         />
-                      </motion.div>
+                      </button>
 
-                      <AnimatePresence mode="wait">
+                      <div id={cvOptionsId} hidden={!showCVOptions}>
                         {showCVOptions && (
                           <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                            initial={
+                              reduceMotion ? false : { opacity: 0, y: -6 }
+                            }
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                            className="absolute top-full left-0 z-100 mt-3 w-full min-w-55 overflow-hidden rounded-2xl border border-white/10 bg-[#050505] p-1.5 shadow-[0_24px_80px_rgba(0,0,0,0.85)] ring-1 ring-black/60 will-change-transform"
+                            className="absolute top-full right-0 z-100 mt-3 w-full min-w-52 rounded-lg border border-white/10 bg-neutral-950 p-1.5 shadow-2xl"
                           >
-                            <button
-                              onClick={() => {
-                                const link = document.createElement('a');
-                                link.href = '/assets/curriculo/devhenrico.pdf';
-                                link.download = 'devhenrico.pdf';
-                                link.click();
-                                setShowCVOptions(false);
-                              }}
+                            <a
+                              href="/assets/curriculo/devhenrico.pdf"
+                              download="devhenrico.pdf"
+                              onClick={closeCVOptions}
                               className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-sm text-neutral-300 transition-all duration-300 hover:bg-white/7 hover:text-white"
                             >
                               <div className="rounded-lg border border-white/5 bg-white/5 p-2.5 transition-colors group-hover:border-cyan-500/30 group-hover:bg-cyan-500/20 group-hover:text-cyan-400">
@@ -399,16 +445,13 @@ export const HeroContent = ({
                                   Documento PDF
                                 </span>
                               </div>
-                            </button>
+                            </a>
 
-                            <button
-                              onClick={() => {
-                                window.open(
-                                  '/assets/curriculo/devhenrico.pdf',
-                                  '_blank',
-                                );
-                                setShowCVOptions(false);
-                              }}
+                            <a
+                              href="/assets/curriculo/devhenrico.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={closeCVOptions}
                               className="group mt-1 flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-sm text-neutral-300 transition-all duration-300 hover:bg-white/7 hover:text-white"
                             >
                               <div className="rounded-lg border border-white/5 bg-white/5 p-2.5 transition-colors group-hover:border-cyan-500/30 group-hover:bg-cyan-500/20 group-hover:text-cyan-400">
@@ -422,10 +465,10 @@ export const HeroContent = ({
                                   Visualização no navegador
                                 </span>
                               </div>
-                            </button>
+                            </a>
                           </motion.div>
                         )}
-                      </AnimatePresence>
+                      </div>
                     </div>
                   </div>
                 </div>

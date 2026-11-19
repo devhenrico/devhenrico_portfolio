@@ -14,6 +14,8 @@ interface MinimalProjectCardProps {
 export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
   const isExternal = project.link?.startsWith('http');
   const cardRef = useRef<HTMLElement>(null);
+  const visibleTech = project.techStack.slice(0, 4);
+  const extraTech = project.techStack.slice(4);
 
   // Interactive mouse tracking for glow effect
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
@@ -56,7 +58,7 @@ export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
       <div className="relative z-10 mt-auto flex items-center justify-between pt-4 transition-colors duration-300 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-linear-to-r before:from-transparent before:via-neutral-600 before:to-transparent">
         {/* Tech Stack */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {project.techStack.slice(0, 4).map((tech) => (
+          {visibleTech.map((tech) => (
             <div
               key={tech.id}
               className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-neutral-800 bg-neutral-900 transition-all duration-300 hover:z-10 hover:scale-110 hover:border-neutral-600"
@@ -67,13 +69,16 @@ export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
                 alt={tech.name}
                 width={18}
                 height={18}
-                className="object-contain"
+                className="size-[18px] object-contain"
               />
             </div>
           ))}
-          {project.techStack.length > 4 && (
-            <div className="rounded-full border border-neutral-800 bg-neutral-900 px-2 py-1 font-mono text-xs text-neutral-400 transition-colors duration-300">
-              +{project.techStack.length - 4}
+          {extraTech.length > 0 && (
+            <div
+              className="rounded-full border border-neutral-800 bg-neutral-900 px-2 py-1 font-mono text-xs text-neutral-400 transition-colors duration-300"
+              title={extraTech.map((tech) => tech.name).join(', ')}
+            >
+              +{extraTech.length}
             </div>
           )}
         </div>
@@ -84,7 +89,7 @@ export const MinimalProjectCard = ({ project }: MinimalProjectCardProps) => {
             className="flex items-center gap-1.5 text-sm font-semibold text-cyan-600 transition-all duration-300 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300"
           >
             <span className="hidden sm:inline">
-              {project.id === 'econoapp' ? 'Ver Projeto' : 'Ver Site'}
+              {project.liveDemo ? 'Ver Site' : 'Ver Projeto'}
             </span>
             <IconArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>

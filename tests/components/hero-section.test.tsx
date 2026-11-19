@@ -19,9 +19,21 @@ describe('HeroSection', () => {
   it('opens the curriculum actions when the curriculum button is clicked', () => {
     render(<HeroSection />);
 
-    fireEvent.click(screen.getByText(/Baixar/i));
+    const button = screen.getByRole('button', { name: 'Baixar Currículo' });
+    fireEvent.click(button);
 
-    expect(screen.getByText('Baixar CV')).toBeInTheDocument();
-    expect(screen.getByText('Abrir CV')).toBeInTheDocument();
+    expect(button).toHaveAttribute('aria-expanded', 'true');
+    const download = screen.getByRole('link', { name: /Baixar CV/ });
+    expect(download).toHaveAttribute('download', 'devhenrico.pdf');
+    expect(screen.getByRole('link', { name: /Abrir CV/ })).toHaveAttribute(
+      'target',
+      '_blank',
+    );
+
+    download.focus();
+    fireEvent.keyDown(download, { key: 'Escape' });
+    expect(button).toHaveFocus();
+    expect(button).toHaveAttribute('aria-expanded', 'false');
+    expect(download).not.toBeInTheDocument();
   });
 });

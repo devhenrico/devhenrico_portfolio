@@ -1,8 +1,13 @@
 import { getSectionIdForRoute } from '@/constants/navigation';
 
 export function scrollToLandingSection(sectionId: string) {
+  const behavior = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+    .matches
+    ? 'instant'
+    : 'smooth';
+
   if (sectionId === 'home') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior });
     return true;
   }
 
@@ -12,7 +17,7 @@ export function scrollToLandingSection(sectionId: string) {
     return false;
   }
 
-  element.scrollIntoView({ behavior: 'smooth' });
+  element.scrollIntoView({ behavior });
   return true;
 }
 

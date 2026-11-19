@@ -50,7 +50,7 @@ test.describe('portfolio navigation', () => {
       }),
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Toggle menu' }).click();
+    await page.getByRole('button', { name: 'Menu de navegação' }).click();
 
     await expect(page.getByRole('link', { name: 'Início' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Projetos' })).toBeVisible();

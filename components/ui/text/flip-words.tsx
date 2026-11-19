@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import { cn } from '@/lib/utils';
 
 export const FlipWords = ({
@@ -10,13 +11,14 @@ export const FlipWords = ({
   className,
   onWordChange,
 }: {
-  words: string[];
+  words: readonly string[];
   duration?: number;
   className?: string;
   onWordChange?: (index: number) => void;
 }) => {
   const [currentWord, setCurrentWord] = useState(words[0]);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const reduceMotion = usePrefersReducedMotion();
 
   const startAnimation = useCallback(() => {
     const nextIndex = words.indexOf(currentWord) + 1;
@@ -29,11 +31,14 @@ export const FlipWords = ({
   }, [currentWord, words, onWordChange]);
 
   useEffect(() => {
-    if (!isAnimating)
-      setTimeout(() => {
-        startAnimation();
-      }, duration);
-  }, [isAnimating, duration, startAnimation]);
+    if (reduceMotion || isAnimating) return;
+    const timer = setTimeout(startAnimation, duration);
+    return () => clearTimeout(timer);
+  }, [reduceMotion, isAnimating, duration, startAnimation]);
+
+  if (reduceMotion) {
+    return <span className={className}>{currentWord}</span>;
+  }
 
   return (
     <AnimatePresence
@@ -41,7 +46,7 @@ export const FlipWords = ({
         setIsAnimating(false);
       }}
     >
-      <motion.div
+      <motion.span
         initial={{
           opacity: 0,
           y: 10,
@@ -97,7 +102,7 @@ export const FlipWords = ({
             <span className="inline-block">&nbsp;</span>
           </motion.span>
         ))}
-      </motion.div>
+      </motion.span>
     </AnimatePresence>
   );
 };

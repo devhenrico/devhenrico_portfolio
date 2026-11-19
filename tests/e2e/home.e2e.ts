@@ -19,10 +19,16 @@ test.describe('portfolio landing page', () => {
     await expect(
       page.getByRole('heading', { name: /Projetos em destaque/i }),
     ).toBeVisible();
-    await expect(page.getByText('DaGym')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Abrir projeto DaGym' }),
+    ).toHaveAttribute('href', 'https://dagym.vercel.app/');
     await expect(page.getByText('StreamPlay')).toBeVisible();
-    await expect(page.getByText('EconoApp')).toBeVisible();
-    await expect(page.getByText('FR Semijoias')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Abrir projeto Download YouTube' }),
+    ).toHaveAttribute('href', 'https://github.com/devhenrico/download-youtube');
+    await expect(
+      page.getByRole('link', { name: 'Abrir projeto Clínica Construindo Saberes' }),
+    ).toHaveAttribute('href', 'https://clinicaconstruindosaberes.com.br/');
 
     await expect(
       page.getByRole('heading', { name: 'Tecnologias' }),

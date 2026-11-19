@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,7 @@ export const Tooltip = ({
   containerClassName?: string;
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const tooltipId = useId();
   const [height, setHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -180,6 +181,18 @@ export const Tooltip = ({
     <div
       ref={containerRef}
       className={cn('relative inline-block', containerClassName)}
+      tabIndex={0}
+      aria-describedby={isVisible ? tooltipId : undefined}
+      onFocus={(event) => {
+        if (!event.currentTarget.matches(':focus-visible')) return;
+        const { left, bottom } = event.currentTarget.getBoundingClientRect();
+        updateMousePosition(left, bottom);
+        setIsVisible(true);
+      }}
+      onBlur={closeTooltip}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') closeTooltip();
+      }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
@@ -192,6 +205,8 @@ export const Tooltip = ({
           <AnimatePresence>
             {isVisible && (
               <motion.div
+                id={tooltipId}
+                role="tooltip"
                 key={String(isVisible)}
                 initial={{ height: 0, opacity: 1 }}
                 animate={{ height, opacity: 1 }}

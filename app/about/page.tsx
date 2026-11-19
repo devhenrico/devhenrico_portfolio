@@ -12,7 +12,11 @@ export default function AboutPage() {
 
       {/* Main Content with Dot Background */}
       <DotBackground className="min-h-screen px-4 pt-20 pb-20 sm:px-6 md:pb-32 lg:px-8">
-        <div className="mx-auto max-w-5xl">
+        <div
+          id="conteudo"
+          tabIndex={-1}
+          className="mx-auto max-w-5xl scroll-mt-20"
+        >
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -88,7 +92,7 @@ export default function AboutPage() {
                   src="/assets/images/henrico.png"
                   alt="Dev Henrico - Desenvolvedor Frontend"
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-120"
+                  className="origin-right scale-125 object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-135"
                   priority
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
@@ -129,15 +133,15 @@ export default function AboutPage() {
                     <p className="text-3xl font-bold text-neutral-900 transition-colors duration-300 group-hover:text-cyan-500 dark:text-white dark:group-hover:text-cyan-400">
                       +4
                     </p>
-                    <p className="mt-1 text-sm font-medium text-neutral-500">
+                    <p className="mt-1 text-sm font-medium text-neutral-600 dark:text-neutral-400">
                       Anos de Aprendizado
                     </p>
                   </div>
                   <div className="group cursor-default">
                     <p className="text-3xl font-bold text-neutral-900 transition-colors duration-300 group-hover:text-cyan-500 dark:text-white dark:group-hover:text-cyan-400">
-                      +12
+                      +15
                     </p>
-                    <p className="mt-1 text-sm font-medium text-neutral-500">
+                    <p className="mt-1 text-sm font-medium text-neutral-600 dark:text-neutral-400">
                       Projetos Construídos
                     </p>
                   </div>

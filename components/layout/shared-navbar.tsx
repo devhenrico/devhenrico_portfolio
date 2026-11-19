@@ -12,13 +12,16 @@ import {
   socialLinks,
 } from '@/constants/navigation';
 import { navigateToLandingRoute } from '@/lib/section-navigation';
+import { ScrollProgress } from '@/components/ui/effects/scroll-progress';
 
 export const SharedNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [clickedSectionId, setClickedSectionId] = useState<string | null>(null);
   const hasReachedClickedSectionRef = useRef(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
-  const isLandingRoute = pathname === '/' || Boolean(getSectionIdForRoute(pathname));
+  const isLandingRoute =
+    pathname === '/' || Boolean(getSectionIdForRoute(pathname));
 
   useEffect(() => {
     if (!isLandingRoute || !clickedSectionId) {
@@ -97,7 +100,22 @@ export const SharedNavbar = () => {
   };
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 border-b border-neutral-200/20 bg-white/10 backdrop-blur-xl transition-colors duration-300 dark:border-neutral-800/20 dark:bg-black/10">
+    <header
+      className="fixed top-0 right-0 left-0 z-50 border-b border-neutral-200/20 bg-white/10 backdrop-blur-xl transition-colors duration-300 dark:border-neutral-800/20 dark:bg-black/10"
+      onKeyDown={(event) => {
+        if (event.key === 'Escape' && isMobileMenuOpen) {
+          setIsMobileMenuOpen(false);
+          menuButtonRef.current?.focus();
+        }
+      }}
+    >
+      <ScrollProgress />
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-10 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-black"
+      >
+        Pular para o conteúdo
+      </a>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -108,11 +126,21 @@ export const SharedNavbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-8 md:flex">
+          <nav
+            aria-label="Principal"
+            className="hidden items-center gap-8 md:flex"
+          >
             {navigationLinks.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
+                aria-current={
+                  isActive(item.href)
+                    ? isLandingRoute
+                      ? 'location'
+                      : 'page'
+                    : undefined
+                }
                 onClick={(event) => handleLinkClick(event, item.href)}
                 className={`relative text-sm font-medium transition-colors duration-300 ${
                   isActive(item.href)
@@ -146,9 +174,12 @@ export const SharedNavbar = () => {
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
             <button
+              type="button"
+              ref={menuButtonRef}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="relative flex h-10 w-10 items-center justify-center rounded-full text-neutral-500 transition-colors duration-300 hover:bg-neutral-100/50 hover:text-neutral-900 dark:hover:bg-neutral-800/30 dark:hover:text-white"
-              aria-label="Toggle menu"
+              aria-label="Menu de navegação"
+              aria-expanded={isMobileMenuOpen}
             >
               <AnimatePresence mode="wait">
                 {isMobileMenuOpen ? (
@@ -183,7 +214,8 @@ export const SharedNavbar = () => {
       {/* Mobile Dropdown Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+          <motion.nav
+            aria-label="Principal"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -195,6 +227,13 @@ export const SharedNavbar = () => {
                 <Link
                   key={item.label}
                   href={item.href}
+                  aria-current={
+                    isActive(item.href)
+                      ? isLandingRoute
+                        ? 'location'
+                        : 'page'
+                      : undefined
+                  }
                   onClick={(event) => handleLinkClick(event, item.href)}
                   className={`block py-2.5 text-base font-medium transition-colors duration-300 ${
                     isActive(item.href)
@@ -226,7 +265,7 @@ export const SharedNavbar = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.nav>
         )}
       </AnimatePresence>
     </header>

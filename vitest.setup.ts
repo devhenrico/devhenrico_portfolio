@@ -48,10 +48,10 @@ function motionElement(tag: string) {
   return Component;
 }
 
-const motion = new Proxy(
+const motion = new Proxy<Record<string, ReturnType<typeof motionElement>>>(
   {},
   {
-    get: (_target, tag: string) => motionElement(tag),
+    get: (target, tag: string) => (target[tag] ??= motionElement(tag)),
   },
 );
 
@@ -65,6 +65,8 @@ vi.mock('motion/react', () => ({
     set: vi.fn(),
   }),
   useSpring: (value: unknown) => value,
+  MotionConfig: ({ children }: { children: React.ReactNode }) => children,
+  useScroll: () => ({ scrollYProgress: 0 }),
   useTransform: (value: unknown) => value,
 }));
 

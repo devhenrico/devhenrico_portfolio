@@ -11,7 +11,7 @@ describe('AboutPage', () => {
       screen.getAllByText(/Desenvolvedor Frontend/i).length,
     ).toBeGreaterThan(0);
     expect(screen.getByText('+4')).toBeInTheDocument();
-    expect(screen.getByText('+12')).toBeInTheDocument();
+    expect(screen.getByText('+15')).toBeInTheDocument();
     expect(screen.getByLabelText('GitHub')).toHaveAttribute(
       'href',
       'https://github.com/devhenrico',
@@ -21,7 +21,7 @@ describe('AboutPage', () => {
   it('toggles the mobile menu', () => {
     render(<AboutPage />);
 
-    fireEvent.click(screen.getByLabelText('Toggle menu'));
+    fireEvent.click(screen.getByRole('button', { name: 'Menu de navegação' }));
 
     expect(screen.getAllByText('Projetos').length).toBeGreaterThan(1);
     expect(screen.getAllByText('Contato').length).toBeGreaterThan(1);

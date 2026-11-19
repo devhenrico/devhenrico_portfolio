@@ -235,7 +235,7 @@ devhenrico-portfolio/
 │       ├── images/                   # devhenrico.png, preview.png (OG)
 │       ├── logos/                    # Logos SVG de tecnologias
 │       ├── lottie/                   # Animações Lottie (scroll-down-hint.json)
-│       └── projects/                 # Screenshots dos projetos (dagym, econoapp, fr-semijoias, streamplay)
+│       └── projects/                 # Screenshots dos projetos em destaque
 │
 ├── tests/
 │   ├── components/                   # Testes unitários (Vitest + Testing Library)

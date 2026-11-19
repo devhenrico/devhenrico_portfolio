@@ -22,7 +22,10 @@ export function IntroLoader() {
 
   useEffect(() => {
     const hasSeenIntro = sessionStorage.getItem('hasSeenIntro');
-    if (hasSeenIntro) {
+    if (
+      hasSeenIntro ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       const timeoutId = window.setTimeout(() => {
         setIsLoading(false);
       }, 0);
@@ -61,10 +64,11 @@ export function IntroLoader() {
     <AnimatePresence>
       {isLoading && (
         <motion.div
+          aria-hidden="true"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, y: -100 }}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
-          className="fixed inset-0 z-100 flex items-center justify-center bg-black"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black motion-reduce:hidden"
         >
           <motion.div
             key={helloIndex}
